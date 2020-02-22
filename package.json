@@ -11,6 +11,7 @@
     "drizzle-react": "^1.2.0",
     "drizzle-react-components": "^1.2.1",
     "moment": "^2.24.0",
+    "node-sass": "^4.13.1",
     "react": "^16.7.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-dom": "^16.7.0",

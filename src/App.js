@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { DrizzleProvider } from "drizzle-react";
 import OfflineContainer from "./OfflineContainer"; // modified from drizzle-react-components
 
-import "./App.css";
+import { Container, Col, Row } from "react-bootstrap";
+import Navigation from "./components/common/Navigation";
 
 import drizzleOptions from "./drizzleOptions";
 import BaseContainer from "./BaseContainer";
@@ -44,9 +45,7 @@ class Metadata extends Component {
     };
   }
   render() {
-    return (
-      <div>{JSON.stringify(this.data)}</div>
-    )
+    return <div>{JSON.stringify(this.data)}</div>;
   }
 }
 
@@ -54,11 +53,18 @@ class AppRoutes extends Component {
   render() {
     return (
       <Router>
-        <Route path='/token' exact component={App}/>
-        <Route path='/' exact component={AppFront}/>
-        <Route path='/metadata' exact component={Metadata}/>
+        <Container fluid className="px-0">
+          <Row className="mx-0">
+            <Col className="px-0">
+              <Navigation />
+              <Route path="/token" exact component={App} />
+              <Route path="/" exact component={AppFront} />
+              <Route path="/metadata" exact component={Metadata} />
+            </Col>
+          </Row>
+        </Container>
       </Router>
-    )
+    );
   }
 }
 
