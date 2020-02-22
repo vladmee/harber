@@ -1,0 +1,44 @@
+.wave {
+  display: block;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: auto;
+  width: 100%;
+
+  &.wave-dark {
+    path {
+      fill: white;
+    }
+  }
+}
+
+section {
+  padding-top: 40px;
+  padding-bottom: 40px;
+
+  & > .container {
+    width: 75%;
+    margin: 0 auto;
+  }
+}
+@media (max-width: 768px) {
+  section {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    & > .container {
+      width: 100%;
+    }
+  }
+}
+
+.section-wave {
+  padding-bottom: 60px;
+  position: relative;
+}
+
+.section-dark {
+  background-image: linear-gradient(to right, #000000, rgba(0, 0, 0, 0.6));
+}

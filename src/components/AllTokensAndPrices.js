@@ -43,69 +43,260 @@ import Token17 from "./tokens/Token17";
 import Token18 from "./tokens/Token18";
 import Token19 from "./tokens/Token19";
 
+import LearnMore from "./PricesPage/LearnMore";
 
 class ArtAndPriceSection extends Component {
-    render() {
-      return (
-        <Fragment>
+  render() {
+    return (
+      <Fragment>
+        <LearnMore />
         <h1>Harber.io</h1>
-        <h3>Harber is a unique gambling platform, built on top of Augur, where instead of betting on a team, you <i>own</i> the team. See <a href = "https://github.com/mcplums/Harber/blob/master/README.md">here</a> for more information. </h3>
-        <h4><i>I am looking for someone to help me build a decent front end prior to mainnet deployment, if you are interested please get in touch: telegram-mcplums, email-andrew@stanger.co.uk</i></h4>
+        <h3>
+          Harber is a unique gambling platform, built on top of Augur, where
+          instead of betting on a team, you <i>own</i> the team. See{" "}
+          <a href="https://github.com/mcplums/Harber/blob/master/README.md">
+            here
+          </a>{" "}
+          for more information.{" "}
+        </h3>
+        <h4>
+          <i>
+            I am looking for someone to help me build a decent front end prior
+            to mainnet deployment, if you are interested please get in touch:
+            telegram-mcplums, email-andrew@stanger.co.uk
+          </i>
+        </h4>
         <h4>All prices are in DAI.</h4>
-        <h4>This demo uses the 19/20 English Premier League. There is one Non Fungible Token per team. To rent a team, set a daily rental price (which must be higher than the current price) and deposit some Dai. The owners of the team that win will receive a split of all rental payments, in proportion to how long they have owned the team.</h4>
-        <h4>You do not need Dai to interact with this demo, click on a team and you will be taken to a test Dai faucet. </h4>
-        <h4>Total rent collected: $<ContractData contract="Harber" method="totalCollected" methodArgs={[]} toEth /></h4>
-        <a href="/token?id=0"><img src={team0} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Manchester United</a>
-        <Token0 />   
-        <a href="/token?id=1"><img src={team1} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Liverpool</a>
-        <Token1 /> 
-        <a href="/token?id=2"><img src={team2} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Leicester City</a>
+        <h4>
+          This demo uses the 19/20 English Premier League. There is one Non
+          Fungible Token per team. To rent a team, set a daily rental price
+          (which must be higher than the current price) and deposit some Dai.
+          The owners of the team that win will receive a split of all rental
+          payments, in proportion to how long they have owned the team.
+        </h4>
+        <h4>
+          You do not need Dai to interact with this demo, click on a team and
+          you will be taken to a test Dai faucet.{" "}
+        </h4>
+        <h4>
+          Total rent collected: $
+          <ContractData
+            contract="Harber"
+            method="totalCollected"
+            methodArgs={[]}
+            toEth
+          />
+        </h4>
+        <a href="/token?id=0">
+          <img
+            src={team0}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Manchester United
+        </a>
+        <Token0 />
+        <a href="/token?id=1">
+          <img
+            src={team1}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Liverpool
+        </a>
+        <Token1 />
+        <a href="/token?id=2">
+          <img
+            src={team2}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Leicester City
+        </a>
         <Token2 />
-        <a href="/token?id=3"><img src={team3} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Manchester City</a>
+        <a href="/token?id=3">
+          <img
+            src={team3}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Manchester City
+        </a>
         <Token3 />
-        <a href="/token?id=4"><img src={team4} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Chelsea</a>
+        <a href="/token?id=4">
+          <img
+            src={team4}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Chelsea
+        </a>
         <Token4 />
-        <a href="/token?id=5"><img src={team5} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Tottenham Hotspur</a>
+        <a href="/token?id=5">
+          <img
+            src={team5}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Tottenham Hotspur
+        </a>
         <Token5 />
-        <a href="/token?id=6"><img src={team6} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Wolverhampton Wanderers</a>
+        <a href="/token?id=6">
+          <img
+            src={team6}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Wolverhampton Wanderers
+        </a>
         <Token6 />
-        <a href="/token?id=7"><img src={team7} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Sheffield United</a>
+        <a href="/token?id=7">
+          <img
+            src={team7}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Sheffield United
+        </a>
         <Token7 />
-        <a href="/token?id=8"><img src={team8} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Crystal Palace</a>
+        <a href="/token?id=8">
+          <img
+            src={team8}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Crystal Palace
+        </a>
         <Token8 />
-        <a href="/token?id=9"><img src={team9} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Arsenal</a>
+        <a href="/token?id=9">
+          <img
+            src={team9}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Arsenal
+        </a>
         <Token9 />
-        <a href="/token?id=10"><img src={team10} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Everton</a>
-        <Token10 />   
-        <a href="/token?id=11"><img src={team11} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Southampton</a>
-        <Token11 /> 
-        <a href="/token?id=12"><img src={team12} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Newcastle</a>
+        <a href="/token?id=10">
+          <img
+            src={team10}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Everton
+        </a>
+        <Token10 />
+        <a href="/token?id=11">
+          <img
+            src={team11}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Southampton
+        </a>
+        <Token11 />
+        <a href="/token?id=12">
+          <img
+            src={team12}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Newcastle
+        </a>
         <Token12 />
-        <a href="/token?id=13"><img src={team13} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Brighton</a>
+        <a href="/token?id=13">
+          <img
+            src={team13}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Brighton
+        </a>
         <Token13 />
-        <a href="/token?id=14"><img src={team14} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Burnley</a>
+        <a href="/token?id=14">
+          <img
+            src={team14}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Burnley
+        </a>
         <Token14 />
-        <a href="/token?id=15"><img src={team15} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />West Ham United</a>
+        <a href="/token?id=15">
+          <img
+            src={team15}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          West Ham United
+        </a>
         <Token15 />
-        <a href="/token?id=16"><img src={team16} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Aston Villa</a>
+        <a href="/token?id=16">
+          <img
+            src={team16}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Aston Villa
+        </a>
         <Token16 />
-        <a href="/token?id=17"><img src={team17} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Bournemouth</a>
+        <a href="/token?id=17">
+          <img
+            src={team17}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Bournemouth
+        </a>
         <Token17 />
-        <a href="/token?id=18"><img src={team18} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Watford</a>
+        <a href="/token?id=18">
+          <img
+            src={team18}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Watford
+        </a>
         <Token18 />
-        <a href="/token?id=19"><img src={team19} style={{maxWidth: "10%", maxHeight: "10%"}} alt="A R T" /><br />Norwich City</a>
+        <a href="/token?id=19">
+          <img
+            src={team19}
+            style={{ maxWidth: "10%", maxHeight: "10%" }}
+            alt="A R T"
+          />
+          <br />
+          Norwich City
+        </a>
         <Token19 />
-        </Fragment>
-      )
-    }
+      </Fragment>
+    );
+  }
 }
 
 ArtAndPriceSection.contextTypes = {
-  drizzle: PropTypes.object,
+  drizzle: PropTypes.object
 };
 
-ArtAndPriceSection.propTypes = {
-};
+ArtAndPriceSection.propTypes = {};
 
 /*
  * Export connected component.
@@ -115,7 +306,7 @@ const mapStateToProps = state => {
   return {
     contracts: state.contracts,
     drizzleStatus: state.drizzleStatus,
-    web3: state.web3,
+    web3: state.web3
   };
 };
 
