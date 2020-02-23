@@ -1,5 +1,5 @@
 import { drizzleConnect } from "drizzle-react";
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import Token from "./tokens/Token";
@@ -32,7 +32,7 @@ class ArtAndPriceSection extends Component {
               })}
             </Row>
           </Container>
-          <Wave className="wave wave-light" />
+          <Wave className="wave wave-dark" />
         </section>
       </>
     );

@@ -5,6 +5,7 @@ import OfflineContainer from "./OfflineContainer"; // modified from drizzle-reac
 
 import { Container, Col, Row } from "react-bootstrap";
 import Navigation from "./components/common/Navigation";
+import Footer from "./components/common/Footer";
 
 import drizzleOptions from "./drizzleOptions";
 import BaseContainer from "./BaseContainer";
@@ -60,6 +61,7 @@ class AppRoutes extends Component {
               <Route path="/token" exact component={App} />
               <Route path="/" exact component={AppFront} />
               <Route path="/metadata" exact component={Metadata} />
+              <Footer />
             </Col>
           </Row>
         </Container>
