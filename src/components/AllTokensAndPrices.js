@@ -7,7 +7,7 @@ import LearnMore from "./PricesPage/LearnMore";
 import LeagueInfo from "./PricesPage/LeagueInfo";
 
 import { teams } from "./tokens/teams";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { ReactComponent as Wave } from "../assets/dividers/wave.svg";
 
 class ArtAndPriceSection extends Component {
@@ -16,7 +16,7 @@ class ArtAndPriceSection extends Component {
       <>
         <LearnMore />
         <LeagueInfo />
-        <section className="section-wave section-black">
+        <section className="section-wave section-dark">
           <Container>
             <Row>
               {teams.map(team => {
@@ -26,7 +26,17 @@ class ArtAndPriceSection extends Component {
                     md={4}
                     className="d-flex align-items-stretch"
                   >
-                    <Token urlId={team.id} name={team.name} image={team.logo} />
+                    <Card
+                      as={"a"}
+                      href={`/token?id=${team.id}`}
+                      className="d-block w-100"
+                    >
+                      <Token
+                        urlId={team.id}
+                        name={team.name}
+                        image={team.logo}
+                      />
+                    </Card>
                   </Col>
                 );
               })}

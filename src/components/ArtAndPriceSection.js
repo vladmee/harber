@@ -1,92 +1,65 @@
 import { drizzleConnect } from "drizzle-react";
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-// import team0 from "./logos/manu.svg";
-// import team1 from "./logos/liverpool.jpg";
-// import team2 from "./logos/Leicester.png";
-// import team3 from "./logos/Manchester_City.png";
-// import team4 from "./logos/Chelsea.png";
-// import team5 from "./logos/Tottenham_Hotspur.png";
-// import team6 from "./logos/Wolverhampton_Wanderers.png";
-// import team7 from "./logos/Sheffield_United.png";
-// import team8 from "./logos/Crystal_Palace.png";
-// import team9 from "./logos/Arsenal.png";
-// import team10 from "./logos/Everton.png";
-// import team11 from "./logos/Southampton.png";
-// import team12 from "./logos/Newcastle.png";
-// import team13 from "./logos/Brighton.png";
-// import team14 from "./logos/Burnley_F.C.png";
-// import team15 from "./logos/West_Ham.png";
-// import team16 from "./logos/Aston_Villa.png";
-// import team17 from "./logos/Bournemouth.png";
-// import team18 from "./logos/Watford.png";
-// import team19 from "./logos/Norwich_City.png";
+
 import PriceSection from "./PriceSection";
 import DaiBalanceSection from "./DaiBalanceSection";
 import TestDaiFaucetSection from "./TestDaiFaucetSection";
+
+import BuyArtworkSection from "./BuyArtworkSection";
+import ActionSection from "./ActionSection";
+import DetailsSection from "./DetailsSection";
+
+import { Container, Row, Col } from "react-bootstrap";
+import Token from "./tokens/Token";
+import { teams } from "./tokens/teams";
+import { ReactComponent as Wave } from "../assets/dividers/wave.svg";
+import { ReactComponent as Div1 } from "../assets/dividers/vert-col.svg";
+import { ReactComponent as Div2 } from "../assets/dividers/horz-col-1.svg";
+import { ReactComponent as Div3 } from "../assets/dividers/horz-col-2.svg";
+import { ReactComponent as Div4 } from "../assets/dividers/horz-row.svg";
 
 var url_string = window.location.href;
 var url = new URL(url_string);
 var urlId = url.searchParams.get("id");
 
-var teamToDisplay;
-
-// if (urlId == 0)
-// { teamToDisplay = team0; }
-// else if (urlId == 1)
-// { teamToDisplay = team1; }
-// else if (urlId == 2)
-// { teamToDisplay = team2; }
-// else if (urlId == 3)
-// { teamToDisplay = team3; }
-// else if (urlId == 4)
-// { teamToDisplay = team4; }
-// else if (urlId == 5)
-// { teamToDisplay = team5; }
-// else if (urlId == 6)
-// { teamToDisplay = team6; }
-// else if (urlId == 7)
-// { teamToDisplay = team7; }
-// else if (urlId == 8)
-// { teamToDisplay = team8; }
-// else if (urlId == 9)
-// { teamToDisplay = team9; }
-// else if (urlId == 10)
-// { teamToDisplay = team10; }
-// else if (urlId == 11)
-// { teamToDisplay = team11; }
-// else if (urlId == 12)
-// { teamToDisplay = team12; }
-// else if (urlId == 13)
-// { teamToDisplay = team13; }
-// else if (urlId == 14)
-// { teamToDisplay = team14; }
-// else if (urlId == 15)
-// { teamToDisplay = team15; }
-// else if (urlId == 16)
-// { teamToDisplay = team16; }
-// else if (urlId == 17)
-// { teamToDisplay = team17; }
-// else if (urlId == 18)
-// { teamToDisplay = team18; }
-// else if (urlId == 19)
-// { teamToDisplay = team19; }
-
-// console.log(teamToDisplay);
-
 class ArtAndPriceSection extends Component {
   render() {
     return (
-      <Fragment>
-        <img
-          src={teamToDisplay}
-          style={{ maxWidth: "23%", maxHeight: "25%" }}
-          alt="A R T"
-        />
-        <DaiBalanceSection />
-        <TestDaiFaucetSection />
-        <PriceSection />
-      </Fragment>
+      <section className="section-wave section-dark">
+        <Container className="container-full">
+          <Row noGutters className="position-relative">
+            <Col lg={6}>
+              <div className="grid-tile top-left position-relative">
+                <Token
+                  urlId={teams[urlId].id}
+                  name={teams[urlId].name}
+                  image={teams[urlId].logo}
+                />
+                <Div2 className="div div-2 d-none d-lg-block" />
+              </div>
+              <div className="grid-tile bottom-left">
+                <DetailsSection />
+              </div>
+            </Col>
+            <Col lg={6} className="d-flex flex-column">
+              <div className="grid-tile top-right position-relative">
+                <BuyArtworkSection />
+                <Div3 className="div div-3 d-none d-lg-block" />
+              </div>
+              <div
+                className="grid-tile bottom-right d-flex flex-column align-items-center justify-content-center"
+                style={{ flex: 1 }}
+              >
+                <ActionSection />
+              </div>
+            </Col>
+            <Div1 className="div div-1 d-none d-lg-block" />
+            <Div4 className="div div-4 d-none d-lg-block" />
+          </Row>
+        </Container>
+        <Wave className="wave wave-dark" />
+      </section>
     );
   }
 }

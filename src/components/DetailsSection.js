@@ -2,6 +2,7 @@ import { drizzleConnect } from "drizzle-react";
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import Moment from "react-moment";
 
 import ContractForm from "./ContractForm";
 import ContractData from "./ContractData";
@@ -10,7 +11,7 @@ var url_string = window.location.href;
 var url = new URL(url_string);
 var urlId = url.searchParams.get("id");
 
-class ActionSection extends Component {
+class DetailsSection extends Component {
   constructor(props, context) {
     super();
     this.utils = context.drizzle.web3.utils;
@@ -137,55 +138,57 @@ class ActionSection extends Component {
   render() {
     return (
       <div>
-        {/* <p>The current deposit will cover the patronage until the time above. At this time, the smart contract steward takes ownership of the artwork and sets its price back to zero.</p> */}
-        {/* <p>Once it crosses this time period, the patron can't top up their deposit anymore and is effectively foreclosed.</p> */}
-        <h5>Actions</h5>
-        {window.ethereum !== undefined ? (
-          <Fragment>
-            <ContractForm
-              buttonText="Increase Daily Rental"
+        {/* <p>Address: <ContractData contract="ERC721Full" method="ownerOf" methodArgs={[urlId]}/></p> */}
+        <p className="mb-1">Current Owners' Remaining deposit:</p>
+        <p>
+          <span className="text-primary">
+            <ContractData
               contract="Harber"
-              method="changePrice"
-              labels={["New Price"]}
-            />
-            <ContractForm
-              buttonText="Top up Deposit"
-              contract="Harber"
-              method="depositDai"
-              labels={["DAI to Deposit"]}
-            />
-            <ContractForm
-              buttonText="Withdraw Deposit"
-              contract="Harber"
-              method="withdrawDeposit"
-              labels={["DAI to Withdraw"]}
+              method="liveDepositAbleToWithdraw"
+              methodArgs={[urlId]}
               toEth
             />
-            <ContractForm
-              buttonText="Withdraw Whole Deposit And transfer token to previous owner"
+          </span>{" "}
+          DAI
+        </p>
+
+        <p className="mb-1">Your Remaining Deposit:</p>
+        <p>
+          <span className="text-primary">
+            <ContractData
               contract="Harber"
-              method="exit"
-              onlyButton
+              method="userDepositAbleToWithdraw"
+              methodArgs={[urlId]}
+              toEth
             />
-          </Fragment>
-        ) : (
-          <Fragment>
-            In order to interact with this contract you need to have a
-            web3/Ethereum-enabled browser. Please download the{" "}
-            <a href="https://metamask.io">MetaMask Chrome extension</a> or open
-            in an Ethereum mobile browser.
-          </Fragment>
-        )}
+          </span>{" "}
+          DAI
+        </p>
+
+        <p className="mb-1">Rental Expiry Time:</p>
+        <p>
+          <span className="text-primary">
+            <Moment toNow>{this.state.rentalExpiryTime}</Moment>
+          </span>
+        </p>
+
+        <p className="mb-1">Total Rent Collected:</p>
+        <p>
+          <span className="text-primary">
+            {this.state.combinedCollectedToken}
+          </span>{" "}
+          DAI
+        </p>
       </div>
     );
   }
 }
 
-ActionSection.contextTypes = {
+DetailsSection.contextTypes = {
   drizzle: PropTypes.object
 };
 
-ActionSection.propTypes = {};
+DetailsSection.propTypes = {};
 
 /*
  * Export connected component.
@@ -197,4 +200,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default drizzleConnect(ActionSection, mapStateToProps);
+export default drizzleConnect(DetailsSection, mapStateToProps);

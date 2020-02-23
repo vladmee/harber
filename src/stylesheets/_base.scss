@@ -2,10 +2,15 @@ body {
   color: #333;
 }
 
+.banner {
+  background-color: black;
+  color: white;
+}
+
 .wave {
   display: block;
   position: absolute;
-  bottom: -1px;
+  bottom: 0;
   left: 0;
   right: 0;
   height: auto;
@@ -18,7 +23,7 @@ body {
   }
   &.wave-light {
     path {
-      fill: black;
+      fill: url(#DarkGradient);
     }
   }
 }
@@ -30,9 +35,13 @@ section {
   & > .container {
     width: 75%;
     margin: 0 auto;
+
+    &.container-full {
+      width: 100%;
+    }
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   section {
     padding-top: 20px;
     padding-bottom: 20px;
@@ -49,7 +58,11 @@ section {
 }
 
 .section-dark {
-  background-image: linear-gradient(to right, #000000, rgba(0, 0, 0, 0.6));
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
 }
 .section-black {
   background-color: black;
@@ -57,4 +70,8 @@ section {
 
 footer {
   padding: 30px 0;
+}
+
+.MuiInput-underline-5:after {
+  border-color: $primary;
 }

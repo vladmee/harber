@@ -5,7 +5,7 @@ import moment from "moment";
 import ContractData from "../ContractData";
 import { getUSDValue } from "../../Actions";
 
-import { Card, Image } from "react-bootstrap";
+import { Image } from "react-bootstrap";
 
 class PriceSection extends Component {
   constructor(props, context) {
@@ -142,11 +142,7 @@ class PriceSection extends Component {
 
   render() {
     return (
-      <Card
-        as={"a"}
-        href={`/token?id=${this.props.urlId}`}
-        className="d-block w-100"
-      >
+      <>
         <h5>Daily rental price</h5>
         <h3 className="text-primary">
           $
@@ -174,7 +170,7 @@ class PriceSection extends Component {
             <> </>
           )}
         </p>
-      </Card>
+      </>
     );
   }
 }

@@ -6,22 +6,20 @@ import BuyArtworkSection from "./BuyArtworkSection";
 import ArtAndPriceSection from "./ArtAndPriceSection";
 
 class IntroSection extends Component {
-    render() {
-      return (
-        <div className="section">
+  render() {
+    return (
+      <div className="section">
         <ArtAndPriceSection />
-        <BuyArtworkSection />
       </div>
-      )
-    }
+    );
+  }
 }
 
 IntroSection.contextTypes = {
-  drizzle: PropTypes.object,
+  drizzle: PropTypes.object
 };
 
-IntroSection.propTypes = {
-};
+IntroSection.propTypes = {};
 
 /*
  * Export connected component.
@@ -31,7 +29,7 @@ const mapStateToProps = state => {
   return {
     contracts: state.contracts,
     drizzleStatus: state.drizzleStatus,
-    web3: state.web3,
+    web3: state.web3
   };
 };
 

@@ -1,1 +1,8 @@
-<svg class="wave" width="100%" height="60" viewBox="0 0 1920 60" aria-hidden="true" preserveAspectRatio="none"><path d="M-153.5,85.5a4002.033,4002.033,0,0,1,658-71c262.854-6.5,431.675,15.372,600,27,257.356,17.779,624.828,19.31,1089-58v102Z"></path></svg>
+<svg class="wave" width="100%" height="60" viewBox="0 0 1920 60" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+      <linearGradient id="DarkGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:rgb(0,0,0);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(0,0,0);stop-opacity:0.6" />
+    </linearGradient>
+      </defs>
+<path d="M-153.5,85.5a4002.033,4002.033,0,0,1,658-71c262.854-6.5,431.675,15.372,600,27,257.356,17.779,624.828,19.31,1089-58v102Z"></path></svg>

@@ -4,34 +4,43 @@ import PropTypes from "prop-types";
 
 import BuyForm from "./BuyForm";
 import ContractData from "./ContractData";
+import DaiBalanceSection from "./DaiBalanceSection";
 
 class BuyArtworkSection extends Component {
-    render() {
-      return ( 
-        <Fragment>
-        <h2>Rent Team</h2>
+  render() {
+    return (
+      <Fragment>
+        <h5>Rent Team</h5>
         {window.ethereum !== undefined ? (
-        <Fragment>
-        {/* <p>You will pay <ContractData contract="Harber" method="price(0)" toEth/> ETH.<br /> Add your own sale price and amount you want to deposit for patronage: </p> */}
-          <BuyForm contract="Harber" method="newRental" labels={["New Rental Price"]} valueLabel="Your Initial Deposit" sendArgs={{}}/>
-        </Fragment>
+          <Fragment>
+            {/* <p>You will pay <ContractData contract="Harber" method="price(0)" toEth/> ETH.<br /> Add your own sale price and amount you want to deposit for patronage: </p> */}
+            <DaiBalanceSection />
+            <BuyForm
+              contract="Harber"
+              method="newRental"
+              labels={["New Rental Price"]}
+              valueLabel="Your Initial Deposit"
+              sendArgs={{}}
+            />
+          </Fragment>
         ) : (
           <Fragment>
-          [In order to buy a token you need to have a web3/Ethereum-enabled browser. Please download
-            the <a href="https://metamask.io">MetaMask Chrome extension</a> or open in an Ethereum mobile browser.]
+            [In order to buy a token you need to have a web3/Ethereum-enabled
+            browser. Please download the{" "}
+            <a href="https://metamask.io">MetaMask Chrome extension</a> or open
+            in an Ethereum mobile browser.]
           </Fragment>
         )}
-        </Fragment>
-      )
-    }
+      </Fragment>
+    );
+  }
 }
 
 BuyArtworkSection.contextTypes = {
-  drizzle: PropTypes.object,
+  drizzle: PropTypes.object
 };
 
-BuyArtworkSection.propTypes = {
-};
+BuyArtworkSection.propTypes = {};
 
 /*
  * Export connected component.
@@ -41,7 +50,7 @@ const mapStateToProps = state => {
   return {
     contracts: state.contracts,
     drizzleStatus: state.drizzleStatus,
-    web3: state.web3,
+    web3: state.web3
   };
 };
 

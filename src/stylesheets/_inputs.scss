@@ -1,0 +1,40 @@
+.btn {
+  border-radius: 30px;
+  padding-right: 30px;
+  padding-left: 30px;
+}
+
+input {
+  border: 0;
+}
+
+.form-control {
+  width: auto !important;
+  flex: 1;
+}
+
+.input-wrapper {
+  border-bottom: 1px solid $primary;
+
+  label {
+    font-weight: 300;
+  }
+  input {
+    &::-webkit-input-placeholder {
+      font-weight: 300;
+      color: #a1a1a1;
+    }
+    &::-moz-placeholder {
+      font-weight: 300;
+      color: #a1a1a1;
+    }
+    &:-ms-input-placeholder {
+      font-weight: 300;
+      color: #a1a1a1;
+    }
+    &:-moz-placeholder {
+      font-weight: 300;
+      color: #a1a1a1;
+    }
+  }
+}
