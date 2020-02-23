@@ -1,3 +1,7 @@
+body {
+  color: #333;
+}
+
 .wave {
   display: block;
   position: absolute;
@@ -10,6 +14,11 @@
   &.wave-dark {
     path {
       fill: white;
+    }
+  }
+  &.wave-light {
+    path {
+      fill: black;
     }
   }
 }
@@ -41,4 +50,7 @@ section {
 
 .section-dark {
   background-image: linear-gradient(to right, #000000, rgba(0, 0, 0, 0.6));
+}
+.section-black {
+  background-color: black;
 }
