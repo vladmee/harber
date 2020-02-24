@@ -26,7 +26,8 @@ class PriceSection extends Component {
       ),
       timeHeldKey: null,
       currentTimeHeld: 0,
-      currentTimeHeldHumanized: ""
+      currentTimeHeldHumanized: "",
+      impliedOdds: null
     };
   }
 
@@ -100,6 +101,15 @@ class PriceSection extends Component {
     return props.contracts["Harber"]["timeHeld"][timeHeldKey].value;
   }
 
+  async getImpliedOdds(props) {
+    const price = await this.utils.fromWei(
+      this.getArtworkPrice(props, this.state.tokenPriceKey),
+      "ether"
+    );
+
+    return (price / props.sumOfAllPrices) * 100;
+  }
+
   async componentWillUpdate(nextProps, nextState) {
     if (
       this.state.patronKey in this.props.contracts["ERC721Full"]["ownerOf"] &&
@@ -138,6 +148,15 @@ class PriceSection extends Component {
         this.updateTimeHeld(nextProps, this.state.timeHeldKey);
       }
     }
+
+    if (
+      this.state.impliedOdds === null &&
+      this.props.sumOfAllPrices !== 0 &&
+      this.state.tokenPriceKey in this.props.contracts["Harber"]["price"]
+    ) {
+      const impliedOdds = await this.getImpliedOdds(this.props);
+      this.setState({ impliedOdds });
+    }
   }
 
   render() {
@@ -153,8 +172,11 @@ class PriceSection extends Component {
             toEth
           />
         </h3>
-        {/* TO DO - ADD ODDS HERE */}
-        <p>Implied odds: 50%</p>
+        <p>
+          {this.state.impliedOdds !== null && !isNaN(this.state.impliedOdds) ? (
+            <>Implied odds: {this.state.impliedOdds}%</>
+          ) : null}
+        </p>
         <Image
           src={window.location.origin + "/logos/" + this.props.image}
           alt={this.props.name}

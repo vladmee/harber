@@ -11,6 +11,50 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 class AllTokens extends Component {
+  constructor(props, context) {
+    super();
+    this.utils = context.drizzle.web3.utils;
+    this.contracts = context.drizzle.contracts;
+    this.currentContext = context;
+    this.state = {
+      contractsReady: false,
+      sumOfAllPrices: 0
+    };
+  }
+
+  getArtworkPrice(props, tokenPriceKey) {
+    return new this.utils.BN(
+      props.contracts["Harber"]["price"][tokenPriceKey].value
+    );
+  }
+
+  componentWillUpdate() {
+    if (!this.state.contractsReady) {
+      if (
+        Object.keys(this.props.contracts["Harber"]["price"]).length ===
+        teams.length
+      ) {
+        this.setState({ contractsReady: true });
+        let sum = 0;
+
+        teams.map(async token => {
+          const tokenPriceKey = this.currentContext.drizzle.contracts.Harber.methods.price.cacheCall(
+            token.id
+          );
+
+          if (tokenPriceKey in this.props.contracts["Harber"]["price"]) {
+            const price = await this.utils.fromWei(
+              this.getArtworkPrice(this.props, tokenPriceKey),
+              "ether"
+            );
+            sum += Number(price);
+            this.setState({ sumOfAllPrices: sum });
+          }
+        });
+      }
+    }
+  }
+
   render() {
     return (
       <>
@@ -35,6 +79,7 @@ class AllTokens extends Component {
                         urlId={team.id}
                         name={team.name}
                         image={team.logo}
+                        sumOfAllPrices={this.state.sumOfAllPrices}
                       />
                     </Card>
                   </Col>
