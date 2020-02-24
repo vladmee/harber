@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { BrowserRouter as Router, Route, withRouter } from "react-router-dom";
+import React from "react";
+import { Route, withRouter } from "react-router-dom";
 import { DrizzleProvider } from "drizzle-react";
 import OfflineContainer from "../../drizzle/OfflineContainer";
 import drizzleOptions from "../../drizzle/drizzleOptions";

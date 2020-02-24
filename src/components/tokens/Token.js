@@ -1,5 +1,5 @@
 import { drizzleConnect } from "drizzle-react";
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 import ContractData from "../ContractData";
@@ -67,8 +67,8 @@ class PriceSection extends Component {
     }
     // update timeHeldKey IF owner updated
     var timeHeldKey;
-    if (patron != "unowned") {
-      var timeHeldKey = this.contracts.Harber.methods.timeHeld.cacheCall(
+    if (patron !== "unowned") {
+      timeHeldKey = this.contracts.Harber.methods.timeHeld.cacheCall(
         props.urlId,
         patron
       );

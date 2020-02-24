@@ -1,7 +1,6 @@
 import { drizzleConnect } from "drizzle-react";
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
 import ContractData from "../ContractData";
 
 var address;

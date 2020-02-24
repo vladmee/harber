@@ -24,7 +24,7 @@ const LearnMore = () => {
             md={6}
             className="d-flex align-items-center justify-content-center"
           >
-            <p className="text-light mb-3 mb-md-0">
+            <p className="text-light mb-3 mb-md-0 text-center text-md-left">
               Harber is a unique gambling platform, built on top of Augur,
               <br />
               where instead of betting on a team, you own the team.

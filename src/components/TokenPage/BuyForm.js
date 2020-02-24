@@ -67,7 +67,7 @@ class BuyForm extends Component {
     // console.log("events is", event);
     // console.log("this.state is", this.state);
     const convertedInputs = this.inputs.map((input, index) => {
-      if (input.name == "_tokenId") {
+      if (input.name === "_tokenId") {
         return urlId;
       } else if (input.type === "bytes32") {
         //// this elseif is not used as thre are no bytes32 inputs
@@ -85,11 +85,11 @@ class BuyForm extends Component {
     if (this.state.value) {
       //// so the below gets the existing price, and then converts it to bignumber format
       // console.log("thingy is ",this.props.contracts[this.props.contract]['price'][this.state.tokenPriceKey].value);
-      const artworkPrice = new this.utils.BN(
-        this.props.contracts[this.props.contract]["price"][
-          this.state.tokenPriceKey
-        ].value
-      );
+      // const artworkPrice = new this.utils.BN(
+      //   this.props.contracts[this.props.contract]["price"][
+      //     this.state.tokenPriceKey
+      //   ].value
+      // );
       // console.log("artwork price is", artworkPrice);
 
       ////originally, the amount payable was current price + deposit, this is now changed to just the deposit.
@@ -148,7 +148,7 @@ class BuyForm extends Component {
           // check if input type is struct and if so loop out struct fields as well
           // console.log(input);
           //this is another hack as Im not sure what is going on
-          if (input.name == "_newPrice") {
+          if (input.name === "_newPrice") {
             return (
               <Input
                 label={"DAI"}

@@ -29,8 +29,8 @@ body {
 }
 
 section {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 60px;
+  padding-bottom: 60px;
 
   & > .container {
     width: 75%;
@@ -41,6 +41,11 @@ section {
     }
   }
 }
+.section-wave {
+  padding-bottom: 100px;
+  position: relative;
+}
+
 @media (max-width: 1024px) {
   section {
     padding-top: 20px;
@@ -50,11 +55,9 @@ section {
       width: 100%;
     }
   }
-}
-
-.section-wave {
-  padding-bottom: 60px;
-  position: relative;
+  .section-wave {
+    padding-bottom: 40px;
+  }
 }
 
 .section-dark {

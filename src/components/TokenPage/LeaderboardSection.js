@@ -1,7 +1,6 @@
 import { drizzleConnect } from "drizzle-react";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
 import { Row, Col } from "react-bootstrap";
 
 // DUMMY DATA
@@ -36,10 +35,6 @@ const leaderboardData = [
   }
 ];
 
-var url_string = window.location.href;
-var url = new URL(url_string);
-var urlId = url.searchParams.get("id");
-
 class LeaderboardSection extends Component {
   constructor(props, context) {
     super();
@@ -53,18 +48,18 @@ class LeaderboardSection extends Component {
   render() {
     return (
       <>
-        <h5>Leaderboard</h5>
+        <h5 className="mb-4">Leaderboard</h5>
         {window.ethereum !== undefined ? (
           <>
             <Row>
-              <h4 className="d-block mx-auto">
+              <h4 className="d-block mx-auto mb-4">
                 Total time held: <span className="text-primary">365 days</span>
               </h4>
             </Row>
             <Row className="w-75 w-75-off mx-auto">
-              {leaderboardData.map(data => {
+              {leaderboardData.map((data, index) => {
                 return (
-                  <Col sm={6}>
+                  <Col sm={6} key={index}>
                     <p>
                       {data.address}:{" "}
                       <span className="text-primary">{data.timeHeld}</span>

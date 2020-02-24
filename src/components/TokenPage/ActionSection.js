@@ -138,34 +138,42 @@ class ActionSection extends Component {
       <div>
         {/* <p>The current deposit will cover the patronage until the time above. At this time, the smart contract steward takes ownership of the artwork and sets its price back to zero.</p> */}
         {/* <p>Once it crosses this time period, the patron can't top up their deposit anymore and is effectively foreclosed.</p> */}
-        <h5>Actions</h5>
+        <h5 className="mb-4">Actions</h5>
         {window.ethereum !== undefined ? (
           <Fragment>
-            <ContractForm
-              buttonText="Increase Daily Rental"
-              contract="Harber"
-              method="changePrice"
-              labels={["New Price"]}
-            />
-            <ContractForm
-              buttonText="Top up Deposit"
-              contract="Harber"
-              method="depositDai"
-              labels={["DAI to Deposit"]}
-            />
-            <ContractForm
-              buttonText="Withdraw Deposit"
-              contract="Harber"
-              method="withdrawDeposit"
-              labels={["DAI to Withdraw"]}
-              toEth
-            />
-            <ContractForm
-              buttonText="Withdraw Whole Deposit And transfer token to previous owner"
-              contract="Harber"
-              method="exit"
-              onlyButton
-            />
+            <div className="mb-3">
+              <ContractForm
+                buttonText="Increase Daily Rental"
+                contract="Harber"
+                method="changePrice"
+                labels={["New Price"]}
+              />
+            </div>
+            <div className="mb-3">
+              <ContractForm
+                buttonText="Top up Deposit"
+                contract="Harber"
+                method="depositDai"
+                labels={["DAI to Deposit"]}
+              />
+            </div>
+            <div className="mb-3">
+              <ContractForm
+                buttonText="Withdraw Deposit"
+                contract="Harber"
+                method="withdrawDeposit"
+                labels={["DAI to Withdraw"]}
+                toEth
+              />
+            </div>
+            <div className="mb-3">
+              <ContractForm
+                buttonText="Withdraw Whole Deposit And transfer token to previous owner"
+                contract="Harber"
+                method="exit"
+                onlyButton
+              />
+            </div>
           </Fragment>
         ) : (
           <Fragment>

@@ -11,6 +11,11 @@ a.card:hover {
   background-color: white;
   text-align: center;
 
+  border: 5px solid transparent;
+  &:hover {
+    border-color: $primary;
+  }
+
   .logo-image {
     max-width: 100%;
   }

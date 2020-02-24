@@ -2,6 +2,10 @@
   border-radius: 30px;
   padding-right: 30px;
   padding-left: 30px;
+
+  &.btn-dark {
+    font-size: 14px;
+  }
 }
 
 input {

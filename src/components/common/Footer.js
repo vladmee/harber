@@ -20,22 +20,22 @@ const Footer = () => {
           >
             <dl>
               <dd>
-                <a href="#" className="text-dark">
+                <a href="/faq" className="text-dark">
                   FAQ
                 </a>
               </dd>
               <dd>
-                <a href="#" className="text-dark">
+                <a href="/github" className="text-dark">
                   Github
                 </a>
               </dd>
               <dd>
-                <a href="#" className="text-dark">
+                <a href="/audit" className="text-dark">
                   Audit
                 </a>
               </dd>
               <dd>
-                <a href="#" className="text-dark">
+                <a href="/team" className="text-dark">
                   Team
                 </a>
               </dd>
@@ -58,17 +58,17 @@ const Footer = () => {
           >
             <dl className="row mb-0">
               <dd className="mr-3">
-                <a href="#" target="_blank">
+                <a href="/github" target="_blank">
                   <FontAwesomeIcon icon={faGithub} size="lg" />
                 </a>
               </dd>
               <dd className="mr-3">
-                <a href="#" target="_blank">
+                <a href="/twitter" target="_blank">
                   <FontAwesomeIcon icon={faTwitter} size="lg" />
                 </a>
               </dd>
               <dd>
-                <a href="#" target="_blank">
+                <a href="/instagram" target="_blank">
                   <FontAwesomeIcon icon={faInstagram} size="lg" />
                 </a>
               </dd>

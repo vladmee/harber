@@ -16,7 +16,7 @@ class ContractData extends Component {
     this.state = {
       dataKey: this.contracts[this.props.contract].methods[
         this.props.method
-      ].cacheCall(...methodArgs),
+      ].cacheCall(...methodArgs)
     };
   }
 
@@ -34,7 +34,7 @@ class ContractData extends Component {
       this.setState({
         dataKey: this.contracts[nextProps.contract].methods[
           nextProps.method
-        ].cacheCall(...nextProps.methodArgs),
+        ].cacheCall(...nextProps.methodArgs)
       });
     }
   }
@@ -81,11 +81,11 @@ class ContractData extends Component {
 
     // Optionally convert wei to ETH
     if (this.props.toEth) {
-      displayData = this.utils.fromWei(displayData, 'ether');
+      displayData = this.utils.fromWei(displayData, "ether");
     }
 
     if (this.props.toDate) {
-      displayData = moment(parseInt(displayData)*1000).toString();
+      displayData = moment(parseInt(displayData) * 1000).toString();
     }
 
     // If return value is an array
@@ -108,14 +108,14 @@ class ContractData extends Component {
       const displayObjectProps = [];
 
       Object.keys(displayData).forEach(key => {
-        if (i != key) {
+        if (i !== key) {
           displayObjectProps.push(
             <li key={i}>
               <strong>{key}</strong>
               {pendingSpinner}
               <br />
               {`${displayData[key]}`}
-            </li>,
+            </li>
           );
         }
 
@@ -135,7 +135,7 @@ class ContractData extends Component {
 }
 
 ContractData.contextTypes = {
-  drizzle: PropTypes.object,
+  drizzle: PropTypes.object
 };
 
 ContractData.propTypes = {
@@ -146,7 +146,7 @@ ContractData.propTypes = {
   hideIndicator: PropTypes.bool,
   toUtf8: PropTypes.bool,
   toAscii: PropTypes.bool,
-  toEth: PropTypes.bool,
+  toEth: PropTypes.bool
 };
 
 /*
@@ -155,7 +155,7 @@ ContractData.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    contracts: state.contracts,
+    contracts: state.contracts
   };
 };
 
