@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import BuyTokenSection from "./BuyTokenSection";
 import ActionSection from "./ActionSection";
 import DetailsSection from "./DetailsSection";
+import LeaderboardSection from "./LeaderboardSection";
 
 import { Container, Row, Col } from "react-bootstrap";
 import Token from "../tokens/Token";
@@ -34,7 +35,7 @@ class AllTokens extends Component {
                 />
                 <Div2 className="div div-2 d-none d-lg-block" />
               </div>
-              <div className="grid-tile bottom-left">
+              <div className="grid-tile">
                 <DetailsSection />
               </div>
             </Col>
@@ -44,7 +45,7 @@ class AllTokens extends Component {
                 <Div3 className="div div-3 d-none d-lg-block" />
               </div>
               <div
-                className="grid-tile bottom-right d-flex flex-column align-items-center justify-content-center"
+                className="grid-tile d-flex flex-column align-items-center justify-content-center"
                 style={{ flex: 1 }}
               >
                 <ActionSection />
@@ -52,6 +53,11 @@ class AllTokens extends Component {
             </Col>
             <Div1 className="div div-1 d-none d-lg-block" />
             <Div4 className="div div-4 d-none d-lg-block" />
+          </Row>
+          <Row noGutters>
+            <div className="grid-tile bottom-right bottom-left">
+              <LeaderboardSection />
+            </div>
           </Row>
         </Container>
         <Wave className="wave wave-dark" />

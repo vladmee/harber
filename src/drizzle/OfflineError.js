@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Alert } from "react-bootstrap";
+import { Container, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { ReactComponent as Wave } from "../assets/dividers/wave.svg";
 
 const OfflineError = props => {
@@ -7,12 +7,21 @@ const OfflineError = props => {
     <section className="section-wave section-dark">
       <Container>
         <Row>
-          <Alert variant="danger" className="text-center">
-            <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-            Please ensure you have metamask installed, logged in, and set to
-            Kovan. If you do not have metamask please click{" "}
-            <a href="offline/index.html">here</a> for an 'offline' version which
-            cannot be interacted with.
+          <Alert
+            variant="light"
+            className="row text-center justify-content-center align-items-center"
+          >
+            <Col xs={2}>
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            </Col>
+            <Col xs={10}>
+              Please ensure you have metamask installed, logged in, and set to
+              Kovan. If you do not have metamask please click{" "}
+              <a href="offline/index.html">here</a> for an 'offline' version
+              which cannot be interacted with.
+            </Col>
           </Alert>
         </Row>
       </Container>
