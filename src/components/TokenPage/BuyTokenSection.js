@@ -6,7 +6,7 @@ import BuyForm from "./BuyForm";
 import ContractData from "../ContractData";
 import DaiBalanceSection from "./DaiBalanceSection";
 
-class BuyArtworkSection extends Component {
+class BuyTokenSection extends Component {
   render() {
     return (
       <Fragment>
@@ -36,11 +36,11 @@ class BuyArtworkSection extends Component {
   }
 }
 
-BuyArtworkSection.contextTypes = {
+BuyTokenSection.contextTypes = {
   drizzle: PropTypes.object
 };
 
-BuyArtworkSection.propTypes = {};
+BuyTokenSection.propTypes = {};
 
 /*
  * Export connected component.
@@ -54,4 +54,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default drizzleConnect(BuyArtworkSection, mapStateToProps);
+export default drizzleConnect(BuyTokenSection, mapStateToProps);

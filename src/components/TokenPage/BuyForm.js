@@ -19,7 +19,7 @@ class BuyForm extends Component {
   //the constructor is run when the page is loaded. NOT when the button is pressed
   constructor(props, context) {
     super(props);
-    // props = the stuff sent on BuyArtworkSection- mainly, it is that contract is Harber and method is buy
+    // props = the stuff sent on BuyTokenSection- mainly, it is that contract is Harber and method is buy
     // console.log("props is", props);
 
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -50,7 +50,7 @@ class BuyForm extends Component {
     //the above function goes through the ABI for the 'buy' function and gets its inputs of _newPrice and _tokenId- that is what this.inputs is
     // console.log("this.inputs is", this.inputs);
     this.state = initialState;
-    this.state.artworkPriceKey = context.drizzle.contracts.Harber.methods.price.cacheCall(
+    this.state.tokenPriceKey = context.drizzle.contracts.Harber.methods.price.cacheCall(
       urlId
     );
   }
@@ -84,10 +84,10 @@ class BuyForm extends Component {
     // console.log("state.value is ", this.state.value);
     if (this.state.value) {
       //// so the below gets the existing price, and then converts it to bignumber format
-      // console.log("thingy is ",this.props.contracts[this.props.contract]['price'][this.state.artworkPriceKey].value);
+      // console.log("thingy is ",this.props.contracts[this.props.contract]['price'][this.state.tokenPriceKey].value);
       const artworkPrice = new this.utils.BN(
         this.props.contracts[this.props.contract]["price"][
-          this.state.artworkPriceKey
+          this.state.tokenPriceKey
         ].value
       );
       // console.log("artwork price is", artworkPrice);

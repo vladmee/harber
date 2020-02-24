@@ -2,11 +2,7 @@ import { drizzleConnect } from "drizzle-react";
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
-import PriceSection from "../PriceSection";
-import DaiBalanceSection from "./DaiBalanceSection";
-import TestDaiFaucetSection from "../TestFaucet/TestDaiFaucetSection";
-
-import BuyArtworkSection from "./BuyArtworkSection";
+import BuyTokenSection from "./BuyTokenSection";
 import ActionSection from "./ActionSection";
 import DetailsSection from "./DetailsSection";
 
@@ -23,7 +19,7 @@ var url_string = window.location.href;
 var url = new URL(url_string);
 var urlId = url.searchParams.get("id");
 
-class ArtAndPriceSection extends Component {
+class AllTokens extends Component {
   render() {
     return (
       <section className="section-wave section-dark">
@@ -44,7 +40,7 @@ class ArtAndPriceSection extends Component {
             </Col>
             <Col lg={6} className="d-flex flex-column">
               <div className="grid-tile top-right position-relative">
-                <BuyArtworkSection />
+                <BuyTokenSection />
                 <Div3 className="div div-3 d-none d-lg-block" />
               </div>
               <div
@@ -64,11 +60,11 @@ class ArtAndPriceSection extends Component {
   }
 }
 
-ArtAndPriceSection.contextTypes = {
+AllTokens.contextTypes = {
   drizzle: PropTypes.object
 };
 
-ArtAndPriceSection.propTypes = {};
+AllTokens.propTypes = {};
 
 /*
  * Export connected component.
@@ -82,4 +78,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default drizzleConnect(ArtAndPriceSection, mapStateToProps);
+export default drizzleConnect(AllTokens, mapStateToProps);

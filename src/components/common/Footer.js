@@ -72,6 +72,19 @@ const Footer = () => {
                   <FontAwesomeIcon icon={faInstagram} size="lg" />
                 </a>
               </dd>
+              {/* 
+                The following code adds a new social media icon:
+
+                <dd>
+                  <a href="<INSERT DIRECT LINK TO YOUR PROFILE>" target="_blank">
+                    <FontAwesomeIcon icon={<INSERT ICON NAME>} size="lg" />
+                  </a>
+                </dd>
+
+                TO ADD A NEW ICON:
+                1. Import from font awesome like faFacebook
+                2. Insert it in the code above
+              */}
             </dl>
           </Col>
         </Row>

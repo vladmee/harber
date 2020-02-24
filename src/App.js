@@ -35,6 +35,11 @@ class AppRoutes extends Component {
               <DrizzleRoute path="/token" exact component={OneToken} />
               <DrizzleRoute path="/" exact component={AllTokens} />
               <Route path="/metadata" exact component={Metadata} />
+              {/* 
+                For static pages where you don't need to interact with a contract just use <Route>
+                
+                For dynamic pages that need access to a contract use <DrizzleRoute>
+              */}
               <Footer />
             </Col>
           </Row>

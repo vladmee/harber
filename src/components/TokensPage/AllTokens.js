@@ -10,7 +10,7 @@ import { teams } from "../tokens/teams";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
-class ArtAndPriceSection extends Component {
+class AllTokens extends Component {
   render() {
     return (
       <>
@@ -49,11 +49,11 @@ class ArtAndPriceSection extends Component {
   }
 }
 
-ArtAndPriceSection.contextTypes = {
+AllTokens.contextTypes = {
   drizzle: PropTypes.object
 };
 
-ArtAndPriceSection.propTypes = {};
+AllTokens.propTypes = {};
 
 /*
  * Export connected component.
@@ -67,4 +67,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default drizzleConnect(ArtAndPriceSection, mapStateToProps);
+export default drizzleConnect(AllTokens, mapStateToProps);

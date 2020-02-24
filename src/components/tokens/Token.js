@@ -14,7 +14,7 @@ class PriceSection extends Component {
     this.contracts = context.drizzle.contracts;
     this.state = {
       USD: -1,
-      artworkPriceKey: context.drizzle.contracts.Harber.methods.price.cacheCall(
+      tokenPriceKey: context.drizzle.contracts.Harber.methods.price.cacheCall(
         props.urlId
       ),
       patron: null,
@@ -83,7 +83,7 @@ class PriceSection extends Component {
   getArtworkPrice(props) {
     // console.log(props.contracts);
     return new this.utils.BN(
-      props.contracts["Harber"]["price"][this.state.artworkPriceKey].value
+      props.contracts["Harber"]["price"][this.state.tokenPriceKey].value
     );
   }
 
@@ -115,8 +115,8 @@ class PriceSection extends Component {
 
     /* todo: fetch new exchange rate? */
     if (
-      this.state.artworkPriceKey in this.props.contracts["Harber"]["price"] &&
-      this.state.artworkPriceKey in nextProps.contracts["Harber"]["price"]
+      this.state.tokenPriceKey in this.props.contracts["Harber"]["price"] &&
+      this.state.tokenPriceKey in nextProps.contracts["Harber"]["price"]
     ) {
       if (
         !this.getArtworkPrice(this.props).eq(this.getArtworkPrice(nextProps)) ||
@@ -153,6 +153,7 @@ class PriceSection extends Component {
             toEth
           />
         </h3>
+        {/* TO DO - ADD ODDS HERE */}
         <p>Implied odds: 50%</p>
         <Image
           src={window.location.origin + "/logos/" + this.props.image}

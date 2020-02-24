@@ -1,3 +1,35 @@
+```
+HarberFrontEnd
+├── README.md
+├── node_modules
+├── package.json
+├── .gitignore
+├── .env
+├── public
+│   ├── logos // all team logos accessible at /logos/<file.ext>
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── index.js
+│   ├── _redirects // tells the server where to redirect (useful for Netlify)
+│   └── manifest.json // replace the text with YOUR app details
+└── src
+    ├── components
+    │   ├── common // components shared accross the app
+    │   │   ├── DrizzleRoute // wrapper for the React Route component to add the drizzle contract tools
+    ├── drizzle // drizzle configuration and initialization
+    ├── contracts
+    ├── tokens // locally define the tokens and the token info component
+    ├── TokensPage // landing page components
+    ├── TokenPage // /token?id= page components
+    ├── stylesheets // scss files
+    ├── Actions.js // calling kraken api for price conversion
+    ├── App.js
+    ├── App.test.js
+    ├── index.js
+    ├── nftmetadata.json // used for redirect
+    └── serviceWorker.js
+```
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

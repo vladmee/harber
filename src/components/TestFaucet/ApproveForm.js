@@ -89,10 +89,7 @@ class ContractForm extends Component {
 
   render() {
     return (
-      <form
-        className="pure-form pure-form-stacked"
-        onSubmit={this.handleSubmit}
-      >
+      <form onSubmit={this.handleSubmit}>
         {this.inputs.map((input, index) => {
           var inputType = this.translateType(input.type);
           var inputLabel = this.props.labels
@@ -115,16 +112,13 @@ class ContractForm extends Component {
           }
         })}
         <Button
-          variant="contained"
+          variant="dark"
           key="submit"
-          className="pure-button"
           type="button"
           onClick={this.handleSubmit}
         >
           {this.props.buttonText}
         </Button>
-        <br />
-        <br />
       </form>
     );
   }

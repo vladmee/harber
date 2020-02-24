@@ -1,7 +1,6 @@
 import { drizzleConnect } from "drizzle-react";
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
 
 import ContractForm from "../TokenPage/ContractForm";
 import ApproveForm from "./ApproveForm";
@@ -16,7 +15,7 @@ class TestDaiFaucetSection extends Component {
     this.utils = context.drizzle.web3.utils;
     this.contracts = context.drizzle.contracts;
     this.state = {
-      artworkPriceKey: context.drizzle.contracts.Harber.methods.price.cacheCall(
+      tokenPriceKey: context.drizzle.contracts.Harber.methods.price.cacheCall(
         urlId
       ),
       rentOwedKey: context.drizzle.contracts.Harber.methods.rentOwed.cacheCall(
