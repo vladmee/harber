@@ -7,7 +7,7 @@ import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 const LeagueInfo = () => {
   return (
-    <section className="section-wave">
+    <section className="section-wave section-league">
       <Container>
         <Row className="text-center">
           <h3 className="w-100 mb-3">English Premier Leauge 19/20</h3>

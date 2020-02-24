@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Container, Row, Col, Button } from "react-bootstrap";
-import logo_vert_dark from "../../assets/harber/logo_vert_dark.svg";
+import logo_icon_dark from "../../assets/harber/logo_icon_dark.svg";
 import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 const LearnMore = () => {
@@ -14,7 +14,7 @@ const LearnMore = () => {
             className="d-flex align-items-center justify-content-center"
           >
             <img
-              src={logo_vert_dark}
+              src={logo_icon_dark}
               height="100"
               alt="Harber logo"
               className="mb-3 mb-md-0"
