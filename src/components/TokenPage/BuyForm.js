@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { relativeTimeRounding } from "moment";
 
-import Input from "./common/Input";
+import Input from "../common/Input";
 import { Button } from "react-bootstrap";
 
 /*

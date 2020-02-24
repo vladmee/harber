@@ -3,7 +3,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 import BuyForm from "./BuyForm";
-import ContractData from "./ContractData";
+import ContractData from "../ContractData";
 import DaiBalanceSection from "./DaiBalanceSection";
 
 class BuyArtworkSection extends Component {

@@ -2,7 +2,7 @@ import { drizzleConnect } from "drizzle-react";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import Input from "./common/Input";
+import Input from "../common/Input";
 import { Button, Col } from "react-bootstrap";
 
 // todo: show ux when transacted

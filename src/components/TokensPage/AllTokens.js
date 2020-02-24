@@ -2,13 +2,13 @@ import { drizzleConnect } from "drizzle-react";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import Token from "./tokens/Token";
-import LearnMore from "./PricesPage/LearnMore";
-import LeagueInfo from "./PricesPage/LeagueInfo";
+import Token from "../tokens/Token";
+import LearnMore from "./LearnMore";
+import LeagueInfo from "./LeagueInfo";
 
-import { teams } from "./tokens/teams";
+import { teams } from "../tokens/teams";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import { ReactComponent as Wave } from "../assets/dividers/wave.svg";
+import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 class ArtAndPriceSection extends Component {
   render() {

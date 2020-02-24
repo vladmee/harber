@@ -2,22 +2,22 @@ import { drizzleConnect } from "drizzle-react";
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
-import PriceSection from "./PriceSection";
+import PriceSection from "../PriceSection";
 import DaiBalanceSection from "./DaiBalanceSection";
-import TestDaiFaucetSection from "./TestDaiFaucetSection";
+import TestDaiFaucetSection from "../TestFaucet/TestDaiFaucetSection";
 
 import BuyArtworkSection from "./BuyArtworkSection";
 import ActionSection from "./ActionSection";
 import DetailsSection from "./DetailsSection";
 
 import { Container, Row, Col } from "react-bootstrap";
-import Token from "./tokens/Token";
-import { teams } from "./tokens/teams";
-import { ReactComponent as Wave } from "../assets/dividers/wave.svg";
-import { ReactComponent as Div1 } from "../assets/dividers/vert-col.svg";
-import { ReactComponent as Div2 } from "../assets/dividers/horz-col-1.svg";
-import { ReactComponent as Div3 } from "../assets/dividers/horz-col-2.svg";
-import { ReactComponent as Div4 } from "../assets/dividers/horz-row.svg";
+import Token from "../tokens/Token";
+import { teams } from "../tokens/teams";
+import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
+import { ReactComponent as Div1 } from "../../assets/dividers/vert-col.svg";
+import { ReactComponent as Div2 } from "../../assets/dividers/horz-col-1.svg";
+import { ReactComponent as Div3 } from "../../assets/dividers/horz-col-2.svg";
+import { ReactComponent as Div4 } from "../../assets/dividers/horz-row.svg";
 
 var url_string = window.location.href;
 var url = new URL(url_string);

@@ -1,39 +1,13 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { DrizzleProvider } from "drizzle-react";
-import OfflineContainer from "./OfflineContainer"; // modified from drizzle-react-components
 
 import { Container, Col, Row } from "react-bootstrap";
 import Navigation from "./components/common/Navigation";
 import Footer from "./components/common/Footer";
+import DrizzleRoute from "./components/common/DrizzleRoute";
 
-import drizzleOptions from "./drizzleOptions";
-import BaseContainer from "./BaseContainer";
-import FrontBaseContainer from "./FrontBaseContainer";
-
-class App extends Component {
-  render() {
-    return (
-      <DrizzleProvider options={drizzleOptions}>
-        <OfflineContainer>
-          <BaseContainer />
-        </OfflineContainer>
-      </DrizzleProvider>
-    );
-  }
-}
-
-class AppFront extends Component {
-  render() {
-    return (
-      <DrizzleProvider options={drizzleOptions}>
-        <OfflineContainer>
-          <FrontBaseContainer />
-        </OfflineContainer>
-      </DrizzleProvider>
-    );
-  }
-}
+import AllTokens from "./components/TokensPage/AllTokens";
+import OneToken from "./components/TokenPage/OneToken";
 
 /* unused in contract, but keeping for now */
 class Metadata extends Component {
@@ -58,8 +32,8 @@ class AppRoutes extends Component {
           <Row className="mx-0">
             <Col className="px-0">
               <Navigation />
-              <Route path="/token" exact component={App} />
-              <Route path="/" exact component={AppFront} />
+              <DrizzleRoute path="/token" exact component={OneToken} />
+              <DrizzleRoute path="/" exact component={AllTokens} />
               <Route path="/metadata" exact component={Metadata} />
               <Footer />
             </Col>

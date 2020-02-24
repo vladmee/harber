@@ -5,7 +5,7 @@ import moment from "moment";
 import Moment from "react-moment";
 
 import ContractForm from "./ContractForm";
-import ContractData from "./ContractData";
+import ContractData from "../ContractData";
 
 var url_string = window.location.href;
 var url = new URL(url_string);
