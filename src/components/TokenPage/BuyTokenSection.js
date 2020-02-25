@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import BuyForm from "./BuyForm";
 import DaiBalanceSection from "./DaiBalanceSection";
+import TestDaiFaucetSection from "../TestFaucet/TestDaiFaucetSection";
 
 class BuyTokenSection extends Component {
   render() {
@@ -14,6 +15,11 @@ class BuyTokenSection extends Component {
           <Fragment>
             {/* <p>You will pay <ContractData contract="Harber" method="price(0)" toEth/> ETH.<br /> Add your own sale price and amount you want to deposit for patronage: </p> */}
             <DaiBalanceSection />
+
+            <div className="mb-3">
+              <TestDaiFaucetSection />
+            </div>
+
             <BuyForm
               contract="Harber"
               method="newRental"

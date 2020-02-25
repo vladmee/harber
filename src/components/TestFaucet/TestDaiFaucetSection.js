@@ -39,11 +39,7 @@ class TestDaiFaucetSection extends Component {
               buttonText="Get $100 test DAI"
               contract="Cash"
               method="faucet"
-            />
-            <ApproveForm
-              buttonText="Approve"
-              contract="Cash"
-              method="approve"
+              onlyButton
             />
           </Fragment>
         ) : (

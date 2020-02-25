@@ -117,7 +117,10 @@ class ContractForm extends Component {
             );
           }
         })}
-        <Col sm={this.props.onlyButton ? 12 : 6} className="text-left">
+        <Col
+          sm={this.props.onlyButton ? 12 : 6}
+          className={this.props.onlyButton ? "text-center" : "text-left"}
+        >
           <Button
             variant="dark"
             key="submit"
