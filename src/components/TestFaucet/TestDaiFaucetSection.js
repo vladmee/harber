@@ -3,7 +3,6 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 import ContractForm from "../TokenPage/ContractForm";
-import ApproveForm from "./ApproveForm";
 
 var url_string = window.location.href;
 var url = new URL(url_string);

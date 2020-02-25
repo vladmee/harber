@@ -6,6 +6,8 @@ import { relativeTimeRounding } from "moment";
 import Input from "../common/Input";
 import { Button } from "react-bootstrap";
 
+import { approveTransaction } from "./ApproveService";
+
 /*
 Edited from drizzle react components, ContractFrom.
 Overkill. Needs to be refactored to smaller scope.
@@ -25,6 +27,7 @@ class BuyForm extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
+    this.context = context;
     this.contracts = context.drizzle.contracts;
     this.utils = context.drizzle.web3.utils;
 
@@ -55,8 +58,14 @@ class BuyForm extends Component {
     );
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
+
+    await this.doSubmit();
+    await approveTransaction(this.context, this.state["_deposit"]);
+  }
+
+  doSubmit() {
     let args = this.props.sendArgs;
     //// args is the msg.value!!! It is NOT either of the two fields
     //// console.log("args is", args);

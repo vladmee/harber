@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import Input from "../common/Input";
 import { Button } from "react-bootstrap";
 
-class ContractForm extends Component {
+class ApproveForm extends Component {
   constructor(props, context) {
     super(props);
 
@@ -39,6 +39,7 @@ class ContractForm extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
+
     let args = this.props.sendArgs;
     const convertedInputs = this.inputs.map((input, index) => {
       // console.log(this.state[input.name]);
@@ -124,15 +125,20 @@ class ContractForm extends Component {
   }
 }
 
-ContractForm.contextTypes = {
+ApproveForm.contextTypes = {
   drizzle: PropTypes.object
 };
 
-ContractForm.propTypes = {
+ApproveForm.propTypes = {
   contract: PropTypes.string.isRequired,
   method: PropTypes.string.isRequired,
   sendArgs: PropTypes.object,
   labels: PropTypes.arrayOf(PropTypes.string)
+};
+
+ApproveForm.defaultProps = {
+  contract: "Cash",
+  method: "approve"
 };
 
 /*
@@ -145,4 +151,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default drizzleConnect(ContractForm, mapStateToProps);
+export default drizzleConnect(ApproveForm, mapStateToProps);
