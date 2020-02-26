@@ -2,6 +2,8 @@ import { drizzleConnect } from "drizzle-react";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import { approveTransaction } from "./ApproveService";
+
 import Input from "../common/Input";
 import { Button, Col } from "react-bootstrap";
 
@@ -17,6 +19,7 @@ class ContractForm extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
+    this.context = context;
     this.contracts = context.drizzle.contracts;
     this.utils = context.drizzle.web3.utils;
 
@@ -42,8 +45,16 @@ class ContractForm extends Component {
     this.state = initialState;
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault();
+
+    await this.doSubmit();
+    if (this.props.method === "depositDai") {
+      await approveTransaction(this.context, this.state["_dai"]);
+    }
+  }
+
+  doSubmit() {
     let args = this.props.sendArgs;
     const convertedInputs = this.inputs.map((input, index) => {
       // console.log(this.state[input.name]);
