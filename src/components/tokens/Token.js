@@ -6,6 +6,7 @@ import ContractData from "../ContractData";
 import { getUSDValue } from "../../Actions";
 
 import { Image } from "react-bootstrap";
+import { roundTwoDecimals } from "../common/Helpers";
 
 class PriceSection extends Component {
   constructor(props, context) {
@@ -174,7 +175,7 @@ class PriceSection extends Component {
         </h3>
         <p>
           {this.state.impliedOdds !== null && !isNaN(this.state.impliedOdds) ? (
-            <>Implied odds: {this.state.impliedOdds}%</>
+            <>Implied odds: {roundTwoDecimals(this.state.impliedOdds)}%</>
           ) : null}
         </p>
         <Image

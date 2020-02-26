@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import moment from "moment";
 import Moment from "react-moment";
 import ContractData from "../ContractData";
+import { roundTwoDecimals } from "../common/Helpers";
 
 var url_string = window.location.href;
 var url = new URL(url_string);
@@ -173,7 +174,7 @@ class DetailsSection extends Component {
         <p className="mb-1">Total Rent Collected:</p>
         <p>
           <span className="text-primary">
-            {this.state.combinedCollectedToken}
+            {roundTwoDecimals(this.state.combinedCollectedToken)}
           </span>{" "}
           DAI
         </p>

@@ -3,6 +3,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 
+import { roundTwoDecimals } from "./common/Helpers";
+
 class ContractData extends Component {
   constructor(props, context) {
     super(props);
@@ -127,7 +129,7 @@ class ContractData extends Component {
 
     return (
       <span>
-        {`${displayData}`}
+        {`${roundTwoDecimals(displayData)}`}
         {pendingSpinner}
       </span>
     );
