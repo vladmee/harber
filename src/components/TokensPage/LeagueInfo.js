@@ -10,7 +10,7 @@ const LeagueInfo = () => {
     <section className="section-wave section-league">
       <Container>
         <Row className="text-center">
-          <h3 className="w-100 mb-3">English Premier Leauge 19/20</h3>
+          <h3 className="w-100 mb-3">English Premier League 19/20</h3>
           <p className="w-100 lead mb-3">
             Total rent collected:{" "}
             <span className="text-primary">

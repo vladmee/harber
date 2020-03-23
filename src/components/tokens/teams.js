@@ -3,6 +3,8 @@ export const teams = [
     id: 0,
     logo: "manu.svg",
     name: "Manchester United"
+    // logo: "biden.jpg",
+    // name: "Joe Biden"
   },
   {
     id: 1,

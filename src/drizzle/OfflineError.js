@@ -18,9 +18,7 @@ const OfflineError = props => {
             </Col>
             <Col xs={10}>
               Please ensure you have metamask installed, logged in, and set to
-              Kovan. If you do not have metamask please click{" "}
-              <a href="offline/index.html">here</a> for an 'offline' version
-              which cannot be interacted with.
+              Kovan.
             </Col>
           </Alert>
         </Row>

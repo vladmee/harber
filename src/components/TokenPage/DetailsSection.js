@@ -167,7 +167,7 @@ class DetailsSection extends Component {
         <p className="mb-1">Rental Expiry Time:</p>
         <p>
           <span className="text-primary">
-            <Moment toNow>{this.state.rentalExpiryTime}</Moment>
+            <Moment fromNow>{this.state.rentalExpiryTime}</Moment>
           </span>
         </p>
 
