@@ -23,7 +23,7 @@ class DetailsSection extends Component {
         urlId
       ),
       totalCollectedKey: context.drizzle.contracts.Harber.methods.totalCollected.cacheCall(),
-      tokenCollectedKey: context.drizzle.contracts.Harber.methods.collectedPerUser.cacheCall(
+      tokenCollectedKey: context.drizzle.contracts.Harber.methods.collectedPerToken.cacheCall(
         urlId
       ),
       rentOwed: -1,
@@ -43,7 +43,7 @@ class DetailsSection extends Component {
 
   getTokenCollected(props) {
     return new this.utils.BN(
-      props.contracts["Harber"]["collectedPerUser"][
+      props.contracts["Harber"]["collectedPerToken"][
         this.state.tokenCollectedKey
       ].value
     );
@@ -121,9 +121,9 @@ class DetailsSection extends Component {
       this.state.rentOwedKey in this.props.contracts["Harber"]["rentOwed"] &&
       this.state.rentOwedKey in nextProps.contracts["Harber"]["rentOwed"] &&
       this.state.tokenCollectedKey in
-        this.props.contracts["Harber"]["collectedPerUser"] &&
+        this.props.contracts["Harber"]["collectedPerToken"] &&
       this.state.tokenCollectedKey in
-        nextProps.contracts["Harber"]["collectedPerUser"]
+        nextProps.contracts["Harber"]["collectedPerToken"]
     ) {
       if (
         !this.getrentOwed(this.props).eq(this.getrentOwed(nextProps)) ||
