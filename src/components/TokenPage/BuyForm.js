@@ -35,7 +35,10 @@ class BuyForm extends Component {
     const abi = this.contracts[this.props.contract].abi;
 
     this.inputs = [];
-    var initialState = {};
+    var initialState = {
+      _newPriceError: null,
+      _depositError: null,
+    };
 
     // Iterate over abi for correct function.
     for (var i = 0; i < abi.length; i++) {
@@ -61,8 +64,59 @@ class BuyForm extends Component {
   async handleSubmit(event) {
     event.preventDefault();
 
+    this.setState({
+      _newPriceError: null,
+      _depositError: null,
+    });
+
+    if (!this.state["_newPrice"]) {
+      this.setState({
+        _newPriceError: "Please insert a rental price",
+      });
+      return;
+    }
+
+    console.log(this.state["_deposit"]);
+    if (!this.state["_deposit"]) {
+      this.setState({
+        _depositError: "Please insert the deposit amount",
+      });
+      return;
+    }
+
+    const getCurrentPrice = await this.props.contracts["Harber"]["price"][
+      this.state.tokenPriceKey
+    ].value;
+    const getNewPrice = await this.utils.toWei(
+      this.state["_newPrice"],
+      "ether"
+    );
+
+    const currentPrice = Number(getCurrentPrice);
+    const newPrice = Number(getNewPrice);
+
+    if (newPrice < currentPrice + currentPrice / 10) {
+      this.setState({
+        _newPriceError:
+          "The new price should be at least 10% higher than the current price",
+      });
+      return;
+    }
+
+    const getDeposit = await this.utils.toWei(this.state["_deposit"], "ether");
+
+    const deposit = Number(getDeposit);
+
+    if (deposit < newPrice / 24) {
+      this.setState({
+        _depositError:
+          "The deposit amount must be enough for at least one hour's rent",
+      });
+      return;
+    }
+
     await this.doSubmit();
-    await approveTransaction(this.context, this.state["_deposit"]);
+    approveTransaction(this.context, this.state["_deposit"]);
   }
 
   doSubmit() {
@@ -159,15 +213,18 @@ class BuyForm extends Component {
           //this is another hack as Im not sure what is going on
           if (input.name === "_newPrice") {
             return (
-              <Input
-                label={"DAI"}
-                key={input.name}
-                type={inputType}
-                name={input.name}
-                value={this.state[input.name]}
-                placeholder={inputLabel}
-                onChange={this.handleInputChange}
-              />
+              <>
+                <Input
+                  label={"DAI"}
+                  key={input.name}
+                  type={inputType}
+                  name={input.name}
+                  value={this.state[input.name]}
+                  placeholder={inputLabel}
+                  onChange={this.handleInputChange}
+                  error={this.state["_newPriceError"]}
+                />
+              </>
             );
           }
 
@@ -197,6 +254,7 @@ class BuyForm extends Component {
               value={this.state[valueLabel]}
               placeholder={valueLabel}
               onChange={this.handleInputChange}
+              error={this.state["_depositError"]}
             />
           </Fragment>
         )}
@@ -215,7 +273,7 @@ class BuyForm extends Component {
 }
 
 BuyForm.contextTypes = {
-  drizzle: PropTypes.object
+  drizzle: PropTypes.object,
 };
 
 // todo: add value label
@@ -223,16 +281,16 @@ BuyForm.propTypes = {
   contract: PropTypes.string.isRequired,
   method: PropTypes.string.isRequired,
   sendArgs: PropTypes.object,
-  labels: PropTypes.arrayOf(PropTypes.string)
+  labels: PropTypes.arrayOf(PropTypes.string),
 };
 
 /*
  * Export connected component.
  */
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    contracts: state.contracts
+    contracts: state.contracts,
   };
 };
 
