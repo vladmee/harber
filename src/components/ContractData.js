@@ -1,164 +1,119 @@
-import { drizzleConnect } from "drizzle-react";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useRef } from "react";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
 import moment from "moment";
 
 import { roundTwoDecimals } from "./common/Helpers";
 
-class ContractData extends Component {
-  constructor(props, context) {
-    super(props);
+const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-    // Fetch initial value from chain and return cache key for reactive updates.
-    var methodArgs = this.props.methodArgs ? this.props.methodArgs : [];
+const ContractData = props => {
+  const { drizzle } = useDrizzle();
+  const state = useDrizzleState(state => state);
 
-    this.utils = context.drizzle.web3.utils;
-    this.contracts = context.drizzle.contracts;
-    // console.log("this.props.method is", this.props.method);
-    this.state = {
-      dataKey: this.contracts[this.props.contract].methods[
-        this.props.method
-      ].cacheCall(...methodArgs)
-    };
-  }
+  const methodArgs = props.methodArgs ? props.methodArgs : [];
 
-  // Will not fix legacy component
-  // eslint-disable-next-line react/no-deprecated
-  componentWillReceiveProps(nextProps) {
-    const { methodArgs, contract, method } = this.props;
+  const contracts = drizzle.contracts;
+  const contractsState = state.contracts;
 
-    const didContractChange = contract !== nextProps.contract;
-    const didMethodChange = method !== nextProps.method;
-    const didArgsChange =
-      JSON.stringify(methodArgs) !== JSON.stringify(nextProps.methodArgs);
+  const [dataKey, setDataKey] = useState(
+    contracts[props.contract].methods[props.method].cacheCall(...methodArgs)
+  );
 
-    if (didContractChange || didMethodChange || didArgsChange) {
-      this.setState({
-        dataKey: this.contracts[nextProps.contract].methods[
-          nextProps.method
-        ].cacheCall(...nextProps.methodArgs)
-      });
-    }
-  }
+  const isFirstRender = useRef(true);
 
-  render() {
-    // Contract is not yet intialized.
-    if (!this.props.contracts[this.props.contract].initialized) {
-      return <span>Initializing...</span>;
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
     }
 
-    // If the cache key we received earlier isn't in the store yet; the initial value is still being fetched.
-    if (
-      !(
-        this.state.dataKey in
-        this.props.contracts[this.props.contract][this.props.method]
+    setDataKey(
+      contracts[props.contract].methods[props.method].cacheCall(
+        ...props.methodArgs
       )
-    ) {
-      return <span>Fetching...</span>;
-    }
+    );
+  });
 
-    // Show a loading spinner for future updates.
-    var pendingSpinner = this.props.contracts[this.props.contract].synced
-      ? ""
-      : "";
+  if (!contractsState[props.contract].initialized) {
+    return <span>Initializing...</span>;
+  }
 
-    // Optionally hide loading spinner (EX: ERC20 token symbol).
-    if (this.props.hideIndicator) {
-      pendingSpinner = "";
-    }
+  if (!(dataKey in contractsState[props.contract][props.method])) {
+    return <span>Fetching...</span>;
+  }
 
-    var displayData = this.props.contracts[this.props.contract][
-      this.props.method
-    ][this.state.dataKey].value;
+  // Show a loading spinner for future updates.
+  const pendingSpinner = contractsState[props.contract].synced ? "" : "";
 
-    // Optionally convert to UTF8
-    if (this.props.toUtf8) {
-      displayData = this.context.drizzle.web3.utils.hexToUtf8(displayData);
-    }
+  // Optionally hide loading spinner (EX: ERC20 token symbol).
+  if (props.hideIndicator) {
+    pendingSpinner = "";
+  }
 
-    // Optionally convert to Ascii
-    if (this.props.toAscii) {
-      displayData = this.context.drizzle.web3.utils.hexToAscii(displayData);
-    }
+  let displayData = contractsState[props.contract][props.method][dataKey].value;
 
-    // Optionally convert wei to ETH
-    if (this.props.toEth) {
-      displayData = this.utils.fromWei(displayData, "ether");
-    }
+  // Optionally convert to UTF8
+  if (props.toUtf8) {
+    displayData = drizzle.web3.utils.hexToUtf8(displayData);
+  }
 
-    if (this.props.toDate) {
-      displayData = moment(parseInt(displayData) * 1000).toString();
-    }
+  // Optionally convert to Ascii
+  if (props.toAscii) {
+    displayData = drizzle.web3.utils.hexToAscii(displayData);
+  }
 
-    // If return value is an array
-    if (Array.isArray(displayData)) {
-      const displayListItems = displayData.map((datum, index) => {
-        return (
-          <li key={index}>
-            {`${datum}`}
+  // Optionally convert wei to ETH
+  if (props.toEth) {
+    displayData = drizzle.web3.utils.fromWei(displayData, "ether");
+  }
+
+  if (props.toDate) {
+    displayData = moment(parseInt(displayData) * 1000).toString();
+  }
+
+  // If return value is an array
+  if (Array.isArray(displayData)) {
+    const displayListItems = displayData.map((datum, index) => {
+      return (
+        <li key={index}>
+          {`${datum}`}
+          {pendingSpinner}
+        </li>
+      );
+    });
+
+    return <ul>{displayListItems}</ul>;
+  }
+
+  // If retun value is an object
+  if (typeof displayData === "object") {
+    var i = 0;
+    const displayObjectProps = [];
+
+    Object.keys(displayData).forEach(key => {
+      if (i !== key) {
+        displayObjectProps.push(
+          <li key={i}>
+            <strong>{key}</strong>
             {pendingSpinner}
+            <br />
+            {`${displayData[key]}`}
           </li>
         );
-      });
+      }
 
-      return <ul>{displayListItems}</ul>;
-    }
+      i++;
+    });
 
-    // If retun value is an object
-    if (typeof displayData === "object") {
-      var i = 0;
-      const displayObjectProps = [];
-
-      Object.keys(displayData).forEach(key => {
-        if (i !== key) {
-          displayObjectProps.push(
-            <li key={i}>
-              <strong>{key}</strong>
-              {pendingSpinner}
-              <br />
-              {`${displayData[key]}`}
-            </li>
-          );
-        }
-
-        i++;
-      });
-
-      return <ul>{displayObjectProps}</ul>;
-    }
-
-    return (
-      <span>
-        {`${roundTwoDecimals(displayData)}`}
-        {pendingSpinner}
-      </span>
-    );
+    return <ul>{displayObjectProps}</ul>;
   }
-}
 
-ContractData.contextTypes = {
-  drizzle: PropTypes.object
+  return (
+    <span>
+      {`${roundTwoDecimals(displayData)}`}
+      {pendingSpinner}
+    </span>
+  );
 };
 
-ContractData.propTypes = {
-  contracts: PropTypes.object.isRequired,
-  contract: PropTypes.string.isRequired,
-  method: PropTypes.string.isRequired,
-  methodArgs: PropTypes.array,
-  hideIndicator: PropTypes.bool,
-  toUtf8: PropTypes.bool,
-  toAscii: PropTypes.bool,
-  toEth: PropTypes.bool
-};
-
-/*
- * Export connected component.
- */
-
-const mapStateToProps = state => {
-  return {
-    contracts: state.contracts
-  };
-};
-
-export default drizzleConnect(ContractData, mapStateToProps);
+export default ContractData;

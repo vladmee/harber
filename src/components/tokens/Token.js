@@ -1,6 +1,6 @@
-import { drizzleConnect } from "drizzle-react";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useRef } from "react";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
+
 import moment from "moment";
 import ContractData from "../ContractData";
 import { getUSDValue } from "../../Actions";
@@ -8,214 +8,165 @@ import { getUSDValue } from "../../Actions";
 import { Image } from "react-bootstrap";
 import { roundTwoDecimals } from "../common/Helpers";
 
-class PriceSection extends Component {
-  constructor(props, context) {
-    super();
-    this.utils = context.drizzle.web3.utils;
-    this.contracts = context.drizzle.contracts;
-    this.state = {
-      USD: -1,
-      tokenPriceKey: context.drizzle.contracts.Harber.methods.price.cacheCall(
-        props.urlId
-      ),
-      patron: null,
-      patronKey: context.drizzle.contracts.ERC721Full.methods.ownerOf.cacheCall(
-        props.urlId
-      ),
-      timeAcquiredKey: context.drizzle.contracts.Harber.methods.timeAcquired.cacheCall(
-        props.urlId
-      ),
-      timeHeldKey: null,
-      currentTimeHeld: 0,
-      currentTimeHeldHumanized: "",
-      impliedOdds: null
-    };
-  }
+const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-  async updateUSDPrice(props) {
-    const price = this.utils.fromWei(this.getArtworkPrice(props), "ether");
-    // console.log("price is",price);
+const PriceSection = props => {
+  const { drizzle } = useDrizzle();
+  const state = useDrizzleState(state => state);
+
+  const utils = drizzle.web3.utils;
+  const contracts = drizzle.contracts;
+  const contractsState = state.contracts;
+
+  const [USD, setUSD] = useState(-1);
+  const [tokenPriceKey, setTokenPriceKey] = useState(
+    drizzle.contracts.Harber.methods.price.cacheCall(props.urlId)
+  );
+  const [patron, setPatron] = useState(null);
+  const [patronKey, setPatronKey] = useState(
+    drizzle.contracts.ERC721Full.methods.ownerOf.cacheCall(props.urlId)
+  );
+  const [timeAcquiredKey, setTimeAcquiredKey] = useState(
+    drizzle.contracts.Harber.methods.timeAcquired.cacheCall(props.urlId)
+  );
+  const [timeHeldKey, setTimeHeldKey] = useState(null);
+  const [currentTimeHeld, setCurrentTimeHeld] = useState(0);
+  const [currentTimeHeldHumanized, setCurrentTimeHeldHumanized] = useState("");
+  const [impliedOdds, setImpliedOdds] = useState(null);
+
+  const getArtworkPrice = () => {
+    return new utils.BN(contractsState["Harber"]["price"][tokenPriceKey].value);
+  };
+
+  const updateUSDPrice = async () => {
+    const price = utils.fromWei(getArtworkPrice(), "ether");
     const USD = await getUSDValue(price);
-    this.setState({ USD });
-  }
+    setUSD(USD);
+  };
 
-  async updateTimeHeld(props, timeHeldKey) {
+  const updateTimeHeld = async timeHeldKey => {
     const date = new Date();
     let currentTimeHeld =
-      parseInt(this.getTimeHeld(props, timeHeldKey)) +
-      (parseInt(date.getTime() / 1000) - parseInt(this.getTimeAcquired(props)));
+      parseInt(getTimeHeld(timeHeldKey)) +
+      (parseInt(date.getTime() / 1000) - parseInt(getTimeAcquired()));
 
     var currentTimeHeldHumanized = moment
       .duration(currentTimeHeld, "seconds")
       .humanize();
 
     if (
-      props.contracts["ERC721Full"]["ownerOf"][this.state.patronKey].value ===
-      this.contracts.Harber.address
+      contractsState["ERC721Full"]["ownerOf"][patronKey].value ===
+      contracts.Harber.address
     ) {
       currentTimeHeldHumanized = "unowned";
     }
 
-    this.setState({
-      currentTimeHeld,
-      currentTimeHeldHumanized
-    });
-  }
+    setCurrentTimeHeld(currentTimeHeld);
+    setCurrentTimeHeldHumanized(currentTimeHeldHumanized);
+  };
 
-  async updatePatron(props) {
-    var patron = this.getPatron(props);
-    if (patron === this.contracts.Harber.address) {
+  const updatePatron = async () => {
+    let patron = getPatron();
+    if (patron === contracts.Harber.address) {
       patron = "unowned";
     }
     // update timeHeldKey IF owner updated
-    var timeHeldKey;
+    let timeHeldKey;
     if (patron !== "unowned") {
-      timeHeldKey = this.contracts.Harber.methods.timeHeld.cacheCall(
+      timeHeldKey = contracts.Harber.methods.timeHeld.cacheCall(
         props.urlId,
         patron
       );
     }
-    this.setState({
-      currentTimeHeld: 0,
-      timeHeldKey,
-      patron
-    });
-  }
+    setCurrentTimeHeld(0);
+    setTimeHeldKey(timeHeldKey);
+    setPatron(patron);
+  };
 
-  getArtworkPrice(props) {
-    // console.log(props.contracts);
-    return new this.utils.BN(
-      props.contracts["Harber"]["price"][this.state.tokenPriceKey].value
-    );
-  }
+  const getPatron = () => {
+    return contractsState["ERC721Full"]["ownerOf"][patronKey].value;
+  };
 
-  getPatron(props) {
-    return props.contracts["ERC721Full"]["ownerOf"][this.state.patronKey].value;
-  }
+  const getTimeAcquired = () => {
+    return contractsState["Harber"]["timeAcquired"][timeAcquiredKey].value;
+  };
 
-  getTimeAcquired(props) {
-    return props.contracts["Harber"]["timeAcquired"][this.state.timeAcquiredKey]
-      .value;
-  }
+  const getTimeHeld = timeHeldKey => {
+    return contractsState["Harber"]["timeHeld"][timeHeldKey].value;
+  };
 
-  getTimeHeld(props, timeHeldKey) {
-    return props.contracts["Harber"]["timeHeld"][timeHeldKey].value;
-  }
-
-  async getImpliedOdds(props) {
-    const price = await this.utils.fromWei(
-      this.getArtworkPrice(props, this.state.tokenPriceKey),
-      "ether"
-    );
+  const getImpliedOdds = async () => {
+    const price = await utils.fromWei(getArtworkPrice(tokenPriceKey), "ether");
 
     return (price / props.sumOfAllPrices) * 100;
-  }
+  };
 
-  async componentWillUpdate(nextProps, nextState) {
-    if (
-      this.state.patronKey in this.props.contracts["ERC721Full"]["ownerOf"] &&
-      this.state.patronKey in nextProps.contracts["ERC721Full"]["ownerOf"]
-    ) {
-      if (
-        this.getPatron(this.props) !== this.getPatron(nextProps) ||
-        this.state.patron === null
-      ) {
-        this.updatePatron(nextProps);
-      }
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (patronKey in contractsState["ERC721Full"]["ownerOf"]) {
+      updatePatron();
     }
 
     /* todo: fetch new exchange rate? */
-    if (
-      this.state.tokenPriceKey in this.props.contracts["Harber"]["price"] &&
-      this.state.tokenPriceKey in nextProps.contracts["Harber"]["price"]
-    ) {
-      if (
-        !this.getArtworkPrice(this.props).eq(this.getArtworkPrice(nextProps)) ||
-        this.state.USD === -1
-      ) {
-        await this.updateUSDPrice(nextProps);
-      }
+    if (tokenPriceKey in contractsState["Harber"]["price"]) {
+      updateUSDPrice();
+    }
+
+    if (timeHeldKey in contractsState["Harber"]["timeHeld"]) {
+      updateTimeHeld(timeHeldKey);
     }
 
     if (
-      this.state.timeHeldKey in this.props.contracts["Harber"]["timeHeld"] &&
-      this.state.timeHeldKey in nextProps.contracts["Harber"]["timeHeld"]
+      impliedOdds === null &&
+      props.sumOfAllPrices !== 0 &&
+      tokenPriceKey in contractsState["Harber"]["price"]
     ) {
-      if (
-        this.getTimeHeld(this.props, this.state.timeHeldKey) !==
-          this.getTimeHeld(nextProps, this.state.timeHeldKey) ||
-        this.state.currentTimeHeld === 0
-      ) {
-        this.updateTimeHeld(nextProps, this.state.timeHeldKey);
-      }
+      const impliedOdds = getImpliedOdds();
+      setImpliedOdds(impliedOdds);
     }
+  });
 
-    if (
-      this.state.impliedOdds === null &&
-      this.props.sumOfAllPrices !== 0 &&
-      this.state.tokenPriceKey in this.props.contracts["Harber"]["price"]
-    ) {
-      const impliedOdds = await this.getImpliedOdds(this.props);
-      this.setState({ impliedOdds });
-    }
-  }
-
-  render() {
-    return (
-      <>
-        <h5>Daily rental price</h5>
-        <h3 className="text-primary">
-          $
-          <ContractData
-            contract="Harber"
-            method="price"
-            methodArgs={[this.props.urlId]}
-            toEth
-          />
-        </h3>
-        <p>
-          {this.state.impliedOdds !== null && !isNaN(this.state.impliedOdds) ? (
-            <>Implied odds: {roundTwoDecimals(this.state.impliedOdds)}%</>
-          ) : null}
-        </p>
-        <Image
-          src={window.location.origin + "/logos/" + this.props.image}
-          alt={this.props.name}
-          height={130}
-          className="logo-image mb-3"
+  return (
+    <>
+      <h5>Daily rental price</h5>
+      <h3 className="text-primary">
+        $
+        <ContractData
+          contract="Harber"
+          method="price"
+          methodArgs={[props.urlId]}
+          toEth
         />
-        <h5>{this.props.name}</h5>
-        <p className="mb-1">Current owner:</p>
-        <p className="small">{this.state.patron}</p>
-        <p className="mb-0">
-          {this.state.currentTimeHeldHumanized ? (
-            <>Owned for {this.state.currentTimeHeldHumanized}</>
-          ) : (
-            <> </>
-          )}
-        </p>
-      </>
-    );
-  }
-}
-
-PriceSection.contextTypes = {
-  drizzle: PropTypes.object
+      </h3>
+      <p>
+        {impliedOdds !== null && !isNaN(impliedOdds) ? (
+          <>Implied odds: {roundTwoDecimals(impliedOdds)}%</>
+        ) : null}
+      </p>
+      <Image
+        src={window.location.origin + "/logos/" + props.image}
+        alt={props.name}
+        height={130}
+        className="logo-image mb-3"
+      />
+      <h5>{props.name}</h5>
+      <p className="mb-1">Current owner:</p>
+      <p className="small">{patron}</p>
+      <p className="mb-0">
+        {currentTimeHeldHumanized ? (
+          <>Owned for {currentTimeHeldHumanized}</>
+        ) : (
+          <> </>
+        )}
+      </p>
+    </>
+  );
 };
 
-PriceSection.propTypes = {};
-
-/*
- * Export connected component.
- */
-
-const mapStateToProps = state => {
-  return {
-    accounts: state.accounts,
-    contracts: state.contracts,
-    drizzleStatus: state.drizzleStatus,
-    web3: state.web3
-  };
-};
-
-export default drizzleConnect(PriceSection, mapStateToProps);
+export default PriceSection;
