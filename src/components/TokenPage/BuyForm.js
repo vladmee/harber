@@ -1,7 +1,5 @@
-import { drizzleConnect } from "drizzle-react";
-import React, { Component, Fragment } from "react";
-import PropTypes from "prop-types";
-import { relativeTimeRounding } from "moment";
+import React, { useState } from "react";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
 
 import Input from "../common/Input";
 import { Button } from "react-bootstrap";
@@ -17,110 +15,104 @@ var url_string = window.location.href;
 var url = new URL(url_string);
 var urlId = url.searchParams.get("id");
 
-class BuyForm extends Component {
-  //the constructor is run when the page is loaded. NOT when the button is pressed
-  constructor(props, context) {
-    super(props);
-    // props = the stuff sent on BuyTokenSection- mainly, it is that contract is Harber and method is buy
-    // console.log("props is", props);
+const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+const BuyForm = props => {
+  const { drizzle } = useDrizzle();
+  const state = useDrizzleState(state => state);
 
-    this.context = context;
-    this.contracts = context.drizzle.contracts;
-    this.utils = context.drizzle.web3.utils;
+  const utils = drizzle.web3.utils;
+  const contracts = drizzle.contracts;
+  const contractsState = state.contracts;
 
-    // Get the contract ABI
-    const abi = this.contracts[this.props.contract].abi;
+  const abi = contracts[props.contract].abi;
+  let inputsArray = [];
+  let initialInputs = {
+    _newPriceError: null,
+    _depositError: null
+  };
+  // Iterate over abi for correct function.
+  for (let i = 0; i < abi.length; i++) {
+    if (abi[i].name === props.method) {
+      inputsArray = abi[i].inputs;
 
-    this.inputs = [];
-    var initialState = {
-      _newPriceError: null,
-      _depositError: null,
-    };
-
-    // Iterate over abi for correct function.
-    for (var i = 0; i < abi.length; i++) {
-      if (abi[i].name === this.props.method) {
-        this.inputs = abi[i].inputs;
-
-        for (var j = 0; j < this.inputs.length; j++) {
-          // console.log(this.inputs[j].name);
-          initialState[this.inputs[j].name] = "";
-        }
-
-        break;
+      for (let j = 0; j < inputsArray.length; j++) {
+        initialInputs[inputsArray[j].name] = "";
       }
+      break;
     }
-    //the above function goes through the ABI for the 'buy' function and gets its inputs of _newPrice and _tokenId- that is what this.inputs is
-    // console.log("this.inputs is", this.inputs);
-    this.state = initialState;
-    this.state.tokenPriceKey = context.drizzle.contracts.Harber.methods.price.cacheCall(
-      urlId
-    );
   }
+  const [inputs, setInputs] = useState(inputsArray);
+  const [inputValues, setInputValues] = useState(initialInputs);
 
-  async handleSubmit(event) {
+  console.log(contracts.Harber.methods);
+  console.log(urlId);
+  console.log(contracts.Harber.methods.price.cacheCall(urlId));
+  const [tokenPriceKey, setTokenPriceKey] = useState(
+    contracts.Harber.methods.price.cacheCall(urlId)
+  );
+
+  const handleSubmit = async event => {
     event.preventDefault();
 
-    this.setState({
+    setInputValues({
+      ...inputValues,
       _newPriceError: null,
-      _depositError: null,
+      _depositError: null
     });
 
-    if (!this.state["_newPrice"]) {
-      this.setState({
-        _newPriceError: "Please insert a rental price",
+    if (!inputValues["_newPrice"]) {
+      setInputValues({
+        ...inputValues,
+        _newPriceError: "Please insert a rental price"
       });
       return;
     }
 
-    console.log(this.state["_deposit"]);
-    if (!this.state["_deposit"]) {
-      this.setState({
-        _depositError: "Please insert the deposit amount",
+    if (!inputValues["_deposit"]) {
+      setInputValues({
+        ...inputValues,
+        _depositError: "Please insert the deposit amount"
       });
       return;
     }
 
-    const getCurrentPrice = await this.props.contracts["Harber"]["price"][
-      this.state.tokenPriceKey
+    const getCurrentPrice = await contractsState["Harber"]["price"][
+      tokenPriceKey
     ].value;
-    const getNewPrice = await this.utils.toWei(
-      this.state["_newPrice"],
-      "ether"
-    );
+    const getNewPrice = await utils.toWei(inputValues["_newPrice"], "ether");
 
     const currentPrice = Number(getCurrentPrice);
     const newPrice = Number(getNewPrice);
 
     if (newPrice < currentPrice + currentPrice / 10) {
-      this.setState({
+      setInputValues({
+        ...inputValues,
         _newPriceError:
-          "The new price should be at least 10% higher than the current price",
+          "The new price should be at least 10% higher than the current price"
       });
       return;
     }
 
-    const getDeposit = await this.utils.toWei(this.state["_deposit"], "ether");
+    const getDeposit = await utils.toWei(inputValues["_deposit"], "ether");
 
     const deposit = Number(getDeposit);
 
     if (deposit < newPrice / 24) {
-      this.setState({
+      setInputValues({
+        ...inputValues,
         _depositError:
-          "The deposit amount must be enough for at least one hour's rent",
+          "The deposit amount must be enough for at least one hour's rent"
       });
       return;
     }
 
-    await this.doSubmit();
-    approveTransaction(this.context, this.state["_deposit"]);
-  }
+    await doSubmit();
+    approveTransaction(inputValues["_deposit"]);
+  };
 
-  doSubmit() {
-    let args = this.props.sendArgs;
+  const doSubmit = () => {
+    let args = props.sendArgs;
     //// args is the msg.value!!! It is NOT either of the two fields
     //// console.log("args is", args);
     //// we know what this.inputs is from above- it is the inputs newprice and tokenId from the abi
@@ -129,23 +121,23 @@ class BuyForm extends Component {
 
     // console.log("events is", event);
     // console.log("this.state is", this.state);
-    const convertedInputs = this.inputs.map((input, index) => {
+    const convertedInputs = inputs.map((input, index) => {
       if (input.name === "_tokenId") {
         return urlId;
       } else if (input.type === "bytes32") {
         //// this elseif is not used as thre are no bytes32 inputs
-        return this.utils.toHex(this.state[input.name]);
+        return utils.toHex(inputValues[input.name]);
       } else if (input.type === "uint256") {
         // console.log("pls",this.state[input.name]);
-        return this.utils.toWei(this.state[input.name], "ether"); // all number fields are ETH  fields.
+        return utils.toWei(inputValues[input.name], "ether"); // all number fields are ETH  fields.
       }
-      return this.state[input.name];
+      return inputValues[input.name];
     });
     // console.log("convertedinputs is", convertedInputs);
 
     //// this.state.value = the deposit amount
     // console.log("state.value is ", this.state.value);
-    if (this.state.value) {
+    if (inputValues.value) {
       //// so the below gets the existing price, and then converts it to bignumber format
       // console.log("thingy is ",this.props.contracts[this.props.contract]['price'][this.state.tokenPriceKey].value);
       // const artworkPrice = new this.utils.BN(
@@ -157,9 +149,7 @@ class BuyForm extends Component {
 
       ////originally, the amount payable was current price + deposit, this is now changed to just the deposit.
       // args.value = new this.utils.BN(this.utils.toWei(this.state.value, 'ether')).add(artworkPrice);
-      args.value = new this.utils.BN(
-        this.utils.toWei(this.state.value, "ether")
-      );
+      args.value = new utils.BN(utils.toWei(inputValues.value, "ether"));
       // console.log("args.value is" , args.value );
       // console.log("value thingy is", this.utils.toWei(this.state.value, 'ether'));
     }
@@ -168,22 +158,26 @@ class BuyForm extends Component {
 
       ////so heres the thing. convertedinputs is the arguments to send to the function. Args = the amount payable. It does this bit if there is value being sent
       // console.log("convertedInputs is ", convertedInputs);
-      return this.contracts[this.props.contract].methods[
-        this.props.method
-      ].cacheSend(...convertedInputs, args);
+      return contracts[props.contract].methods[props.method].cacheSend(
+        ...convertedInputs,
+        args
+      );
     }
 
     ////it does this if is no value being sent, so in reality this is not used.
     return this.contracts[this.props.contract].methods[
       this.props.method
     ].cacheSend(...convertedInputs);
-  }
+  };
 
-  handleInputChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
+  const handleInputChange = event => {
+    setInputValues({
+      ...inputValues,
+      [event.target.name]: event.target.value
+    });
+  };
 
-  translateType(type) {
+  const translateType = type => {
     switch (true) {
       case /^uint/.test(type):
         return "number";
@@ -194,104 +188,79 @@ class BuyForm extends Component {
       default:
         return "text";
     }
-  }
-
-  render() {
-    const valueLabel = this.props.valueLabel;
-    return (
-      <form
-        className="pure-form pure-form-stacked w-50 mx-auto"
-        onSubmit={this.handleSubmit}
-      >
-        {this.inputs.map((input, index) => {
-          var inputType = this.translateType(input.type);
-          var inputLabel = this.props.labels
-            ? this.props.labels[index]
-            : input.name;
-          // check if input type is struct and if so loop out struct fields as well
-          // console.log(input);
-          //this is another hack as Im not sure what is going on
-          if (input.name === "_newPrice") {
-            return (
-              <>
-                <Input
-                  label={"DAI"}
-                  key={input.name}
-                  type={inputType}
-                  name={input.name}
-                  value={this.state[input.name]}
-                  placeholder={inputLabel}
-                  onChange={this.handleInputChange}
-                  error={this.state["_newPriceError"]}
-                />
-              </>
-            );
-          }
-
-          // if (input.name == "_deposit")
-          // {
-          //   return (
-
-          //     // <Input
-          //       // key={input.name}
-          //       // type={inputType}
-          //       // name={input.name}
-          //       // value={this.state[input.name]}
-          //       // placeholder={inputLabel}
-          //       // onChange={this.handleInputChange}
-          //       // startAdornment={<InputAdornment position="start">ETH</InputAdornment>}
-          //     // />
-          //   );
-          // }
-        })}
-        {valueLabel && (
-          <Fragment>
-            <Input
-              label={"DAI"}
-              key={valueLabel}
-              type="number"
-              name="_deposit"
-              value={this.state[valueLabel]}
-              placeholder={valueLabel}
-              onChange={this.handleInputChange}
-              error={this.state["_depositError"]}
-            />
-          </Fragment>
-        )}
-        <Button
-          variant="dark"
-          key="submit"
-          type="button"
-          className="text-uppercase"
-          onClick={this.handleSubmit}
-        >
-          Rent Token
-        </Button>
-      </form>
-    );
-  }
-}
-
-BuyForm.contextTypes = {
-  drizzle: PropTypes.object,
-};
-
-// todo: add value label
-BuyForm.propTypes = {
-  contract: PropTypes.string.isRequired,
-  method: PropTypes.string.isRequired,
-  sendArgs: PropTypes.object,
-  labels: PropTypes.arrayOf(PropTypes.string),
-};
-
-/*
- * Export connected component.
- */
-
-const mapStateToProps = (state) => {
-  return {
-    contracts: state.contracts,
   };
+
+  const valueLabel = props.valueLabel;
+
+  return (
+    <form
+      className="pure-form pure-form-stacked w-50 mx-auto"
+      onSubmit={handleSubmit}
+    >
+      {inputs.map((input, index) => {
+        var inputType = translateType(input.type);
+        var inputLabel = props.labels ? props.labels[index] : input.name;
+        // check if input type is struct and if so loop out struct fields as well
+        // console.log(input);
+        //this is another hack as Im not sure what is going on
+        if (input.name === "_newPrice") {
+          return (
+            <>
+              <Input
+                label={"DAI"}
+                key={input.name}
+                type={inputType}
+                name={input.name}
+                value={inputValues[input.name]}
+                placeholder={inputLabel}
+                onChange={handleInputChange}
+                error={inputValues["_newPriceError"]}
+              />
+            </>
+          );
+        }
+
+        // if (input.name == "_deposit")
+        // {
+        //   return (
+
+        //     // <Input
+        //       // key={input.name}
+        //       // type={inputType}
+        //       // name={input.name}
+        //       // value={this.state[input.name]}
+        //       // placeholder={inputLabel}
+        //       // onChange={this.handleInputChange}
+        //       // startAdornment={<InputAdornment position="start">ETH</InputAdornment>}
+        //     // />
+        //   );
+        // }
+      })}
+      {valueLabel && (
+        <>
+          <Input
+            label={"DAI"}
+            key={valueLabel}
+            type="number"
+            name="_deposit"
+            value={inputValues[valueLabel]}
+            placeholder={valueLabel}
+            onChange={handleInputChange}
+            error={inputValues["_depositError"]}
+          />
+        </>
+      )}
+      <Button
+        variant="dark"
+        key="submit"
+        type="button"
+        className="text-uppercase"
+        onClick={handleSubmit}
+      >
+        Rent Token
+      </Button>
+    </form>
+  );
 };
 
-export default drizzleConnect(BuyForm, mapStateToProps);
+export default BuyForm;

@@ -6,7 +6,7 @@ import Navigation from "./components/common/Navigation";
 import Footer from "./components/common/Footer";
 
 import AllTokens from "./components/TokensPage/AllTokens";
-// import OneToken from "./components/TokenPage/OneToken";
+import OneToken from "./components/TokenPage/OneToken";
 
 /* unused in contract, but keeping for now */
 class Metadata extends Component {
@@ -31,7 +31,7 @@ class AppRoutes extends Component {
           <Row className="mx-0">
             <Col className="px-0">
               <Navigation />
-              {/* <Route path="/token" exact component={OneToken} /> */}
+              <Route path="/token/:id" exact component={OneToken} />
               <Route path="/" exact component={AllTokens} />
               <Route path="/metadata" exact component={Metadata} />
               {/* 

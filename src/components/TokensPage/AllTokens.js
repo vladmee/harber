@@ -75,7 +75,7 @@ const AllTokens = () => {
                 >
                   <Card
                     as={"a"}
-                    href={`/token?id=${team.id}`}
+                    href={`/token/${team.id}`}
                     className="d-block w-100"
                   >
                     <Token

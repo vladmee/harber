@@ -1,7 +1,5 @@
-import { drizzleConnect } from "drizzle-react";
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-
+import React, { useState } from "react";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { approveTransaction } from "./ApproveService";
 
 import Input from "../common/Input";
@@ -12,51 +10,48 @@ var url_string = window.location.href;
 var url = new URL(url_string);
 var urlId = url.searchParams.get("id");
 
-class ContractForm extends Component {
-  constructor(props, context) {
-    super(props);
+const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+const ContractForm = props => {
+  const { drizzle } = useDrizzle();
+  const state = useDrizzleState(state => state);
 
-    this.context = context;
-    this.contracts = context.drizzle.contracts;
-    this.utils = context.drizzle.web3.utils;
+  const utils = drizzle.web3.utils;
+  const contracts = drizzle.contracts;
+  const contractsState = state.contracts;
 
-    // Get the contract ABI
-    const abi = this.contracts[this.props.contract].abi;
+  const abi = contracts[props.contract].abi;
+  let inputsArray = [];
+  let initialInputs = {
+    _newPriceError: null,
+    _depositError: null
+  };
+  // Iterate over abi for correct function.
+  for (let i = 0; i < abi.length; i++) {
+    if (abi[i].name === props.method) {
+      inputsArray = abi[i].inputs;
 
-    this.inputs = [];
-    var initialState = {};
-
-    // Iterate over abi for correct function.
-    for (var i = 0; i < abi.length; i++) {
-      if (abi[i].name === this.props.method) {
-        this.inputs = abi[i].inputs;
-
-        for (var j = 0; j < this.inputs.length; j++) {
-          initialState[this.inputs[j].name] = "";
-        }
-
-        break;
+      for (let j = 0; j < inputsArray.length; j++) {
+        initialInputs[inputsArray[j].name] = "";
       }
+      break;
     }
-
-    this.state = initialState;
   }
+  const [inputs, setInputs] = useState(inputsArray);
+  const [inputValues, setInputValues] = useState(initialInputs);
 
-  async handleSubmit(event) {
+  const handleSubmit = async event => {
     event.preventDefault();
 
-    await this.doSubmit();
-    if (this.props.method === "depositDai") {
-      await approveTransaction(this.context, this.state["_dai"]);
+    await doSubmit();
+    if (props.method === "depositDai") {
+      await approveTransaction(inputValues["_dai"]);
     }
-  }
+  };
 
-  doSubmit() {
-    let args = this.props.sendArgs;
-    const convertedInputs = this.inputs.map((input, index) => {
+  const doSubmit = () => {
+    let args = props.sendArgs;
+    const convertedInputs = inputs.map((input, index) => {
       // console.log(this.state[input.name]);
       if (input.name === "_tokenId") {
         return urlId;
@@ -64,32 +59,33 @@ class ContractForm extends Component {
       if (input.name === "_amount") {
         return 100000000000000000000;
       } else if (input.type === "bytes32") {
-        return this.utils.toHex(this.state[input.name]);
+        return utils.toHex(inputValues[input.name]);
       } else if (input.type === "uint256") {
-        return this.utils.toWei(this.state[input.name], "ether"); // all number fields are ETH  fields.
+        return utils.toWei(inputValues[input.name], "ether"); // all number fields are ETH  fields.
       }
-      return this.state[input.name];
+      return inputValues[input.name];
     });
 
-    if (this.state.value) {
-      args.value = this.utils.toWei(this.state.value, "ether");
+    if (inputValues.value) {
+      args.value = utils.toWei(inputValues.value, "ether");
     }
     if (args) {
-      return this.contracts[this.props.contract].methods[
-        this.props.method
-      ].cacheSend(...convertedInputs, args);
+      return contracts[props.contract].methods[props.method].cacheSend(
+        ...convertedInputs,
+        args
+      );
     }
 
-    return this.contracts[this.props.contract].methods[
-      this.props.method
-    ].cacheSend(...convertedInputs);
-  }
+    return contracts[props.contract].methods[props.method].cacheSend(
+      ...convertedInputs
+    );
+  };
 
-  handleInputChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
+  const handleInputChange = event => {
+    setInputValues({ ...inputValues, [event.target.name]: event.target.value });
+  };
 
-  translateType(type) {
+  const translateType = type => {
     switch (true) {
       case /^uint/.test(type):
         return "number";
@@ -100,72 +96,46 @@ class ContractForm extends Component {
       default:
         return "text";
     }
-  }
-
-  render() {
-    return (
-      <form className="row" onSubmit={this.handleSubmit}>
-        {this.inputs.map((input, index) => {
-          var inputType = this.translateType(input.type);
-          var inputLabel = this.props.labels
-            ? this.props.labels[index]
-            : input.name;
-          // check if input type is struct and if so loop out struct fields as well
-
-          if (input.name !== "_tokenId" && input.name !== "_amount") {
-            // console.log(input.name);
-            return (
-              <Col sm={6} key={input.name}>
-                <Input
-                  label={"DAI"}
-                  type={inputType}
-                  name={input.name}
-                  value={this.state[input.name]}
-                  placeholder={inputLabel}
-                  onChange={this.handleInputChange}
-                />
-              </Col>
-            );
-          }
-        })}
-        <Col
-          sm={this.props.onlyButton ? 12 : 6}
-          className={this.props.onlyButton ? "text-center" : "text-left"}
-        >
-          <Button
-            variant="dark"
-            key="submit"
-            type="button"
-            className="text-uppercase"
-            onClick={this.handleSubmit}
-          >
-            {this.props.buttonText}
-          </Button>
-        </Col>
-      </form>
-    );
-  }
-}
-
-ContractForm.contextTypes = {
-  drizzle: PropTypes.object
-};
-
-ContractForm.propTypes = {
-  contract: PropTypes.string.isRequired,
-  method: PropTypes.string.isRequired,
-  sendArgs: PropTypes.object,
-  labels: PropTypes.arrayOf(PropTypes.string)
-};
-
-/*
- * Export connected component.
- */
-
-const mapStateToProps = state => {
-  return {
-    contracts: state.contracts
   };
+  return (
+    <form className="row" onSubmit={handleSubmit}>
+      {inputs.map((input, index) => {
+        var inputType = translateType(input.type);
+        var inputLabel = props.labels ? props.labels[index] : input.name;
+        // check if input type is struct and if so loop out struct fields as well
+
+        if (input.name !== "_tokenId" && input.name !== "_amount") {
+          // console.log(input.name);
+          return (
+            <Col sm={6} key={input.name}>
+              <Input
+                label={"DAI"}
+                type={inputType}
+                name={input.name}
+                value={inputValues[input.name]}
+                placeholder={inputLabel}
+                onChange={handleInputChange}
+              />
+            </Col>
+          );
+        }
+      })}
+      <Col
+        sm={props.onlyButton ? 12 : 6}
+        className={props.onlyButton ? "text-center" : "text-left"}
+      >
+        <Button
+          variant="dark"
+          key="submit"
+          type="button"
+          className="text-uppercase"
+          onClick={handleSubmit}
+        >
+          {props.buttonText}
+        </Button>
+      </Col>
+    </form>
+  );
 };
 
-export default drizzleConnect(ContractForm, mapStateToProps);
+export default ContractForm;
