@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { history, store } from "./store";
 
 import { Container, Col, Row } from "react-bootstrap";
+import ScrollToTop from "./components/common/ScrollToTop";
 import Navigation from "./components/common/Navigation";
 import Footer from "./components/common/Footer";
 
@@ -26,7 +28,8 @@ class Metadata extends Component {
 class AppRoutes extends Component {
   render() {
     return (
-      <Router>
+      <Router history={history} store={store}>
+        <ScrollToTop />
         <Container fluid className="px-0">
           <Row className="mx-0">
             <Col className="px-0">

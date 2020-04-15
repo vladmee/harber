@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
+import { useSelector } from "react-redux";
 
 import Input from "../common/Input";
 import { Button } from "react-bootstrap";
@@ -20,6 +21,7 @@ const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 const BuyForm = props => {
   const { drizzle } = useDrizzle();
   const state = useDrizzleState(state => state);
+  const urlId = useSelector(state => state.status.currentToken);
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
@@ -45,9 +47,6 @@ const BuyForm = props => {
   const [inputs, setInputs] = useState(inputsArray);
   const [inputValues, setInputValues] = useState(initialInputs);
 
-  console.log(contracts.Harber.methods);
-  console.log(urlId);
-  console.log(contracts.Harber.methods.price.cacheCall(urlId));
   const [tokenPriceKey, setTokenPriceKey] = useState(
     contracts.Harber.methods.price.cacheCall(urlId)
   );

@@ -1,19 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
+import { useDispatch } from "react-redux";
+import { withRouter } from "react-router";
 
 import Token from "../tokens/Token";
 import LearnMore from "./LearnMore";
 import LeagueInfo from "./LeagueInfo";
 
 import { teams } from "../tokens/teams";
+import { history } from "../../store";
+import { setCurrentToken } from "../../store/actions/status";
+
 import { Container, Row, Col, Card } from "react-bootstrap";
 import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-const AllTokens = () => {
+const AllTokens = props => {
   const { drizzle } = useDrizzle();
   const state = useDrizzleState(state => state);
+
+  const dispatch = useDispatch();
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
@@ -59,6 +66,11 @@ const AllTokens = () => {
     }
   });
 
+  const displayToken = async tokenId => {
+    await dispatch(setCurrentToken(tokenId));
+    await props.history.push(`/token/${tokenId}`);
+  };
+
   return (
     <>
       <LearnMore />
@@ -74,8 +86,7 @@ const AllTokens = () => {
                   className="d-flex align-items-stretch"
                 >
                   <Card
-                    as={"a"}
-                    href={`/token/${team.id}`}
+                    onClick={() => displayToken(team.id)}
                     className="d-block w-100"
                   >
                     <Token
