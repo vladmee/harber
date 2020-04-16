@@ -1,15 +1,21 @@
-import { SET_CURRENT_TOKEN, SET_CURRENT_TX } from "../actions/status";
+import {
+  SET_CURRENT_TOKEN,
+  SET_CURRENT_TX,
+  CLEAR_CURRENT_TX
+} from "../actions/status";
+
+const emptyTx = {
+  active: false,
+  name: null,
+  stackTempKey: null,
+  txHash: null,
+  status: null
+};
 
 export default function(
   state = {
     currentToken: null,
-    currentTx: {
-      active: false,
-      name: null,
-      stackTempKey: null,
-      txHash: null,
-      status: null
-    }
+    currentTx: emptyTx
   },
   action
 ) {
@@ -28,6 +34,12 @@ export default function(
           ...state.currentTx,
           ...action.payload
         }
+      };
+    }
+    case CLEAR_CURRENT_TX: {
+      return {
+        ...state,
+        currentTx: emptyTx
       };
     }
     default: {

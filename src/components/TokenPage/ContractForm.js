@@ -57,7 +57,7 @@ const ContractForm = props => {
         return urlId;
       }
       if (input.name === "_amount") {
-        return 100000000000000000000;
+        return String(100000000000000000000);
       } else if (input.type === "bytes32") {
         return utils.toHex(inputValues[input.name]);
       } else if (input.type === "uint256") {
@@ -69,13 +69,15 @@ const ContractForm = props => {
     if (inputValues.value) {
       args.value = utils.toWei(inputValues.value, "ether");
     }
-    if (args) {
+
+    if (args && Object.keys(args).length !== 0 && args.constructor !== Object) {
       return contracts[props.contract].methods[props.method].cacheSend(
         ...convertedInputs,
         args
       );
     }
 
+    console.log(convertedInputs);
     return contracts[props.contract].methods[props.method].cacheSend(
       ...convertedInputs
     );

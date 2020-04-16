@@ -1,26 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Alert, Spinner } from "react-bootstrap";
 import { ReactComponent as Wave } from "../assets/dividers/wave.svg";
+import ConnectionBanner from "@rimble/connection-banner";
 
-const OfflineError = props => {
+const OfflineError = ({ networkId, drizzleStatus }) => {
+  const [currentNetwork, setCurrentNetwork] = useState(null);
+
+  useEffect(() => {
+    if (networkId) {
+      setCurrentNetwork(networkId);
+    }
+    if (drizzleStatus && !drizzleStatus.initialized && window.web3) {
+      window.web3.version.getNetwork((error, networkId) => {
+        setCurrentNetwork(parseInt(networkId));
+      });
+    }
+  }, [networkId, drizzleStatus]);
+
   return (
     <section className="section-wave section-dark">
       <Container>
         <Row>
-          <Alert
-            variant="light"
-            className="row text-center justify-content-center align-items-center"
-          >
-            <Col xs={2}>
-              <Spinner animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-              </Spinner>
-            </Col>
-            <Col xs={10}>
-              Please ensure you have metamask installed, logged in, and set to
-              Kovan.
-            </Col>
-          </Alert>
+          <ConnectionBanner
+            currentNetwork={currentNetwork}
+            requiredNetwork={3}
+            //TODO: requiredNetwork set to Kovan now
+            onWeb3Fallback={null}
+          />
         </Row>
       </Container>
       <Wave className="wave wave-dark" />

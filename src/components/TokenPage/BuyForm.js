@@ -3,6 +3,7 @@ import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { useSelector } from "react-redux";
 
 import Input from "../common/Input";
+import TxModal from "../common/TxModal";
 import { Button } from "react-bootstrap";
 
 import { approveTransaction } from "./ApproveService";
@@ -23,7 +24,8 @@ const BuyForm = props => {
   const state = useDrizzleState(state => state);
 
   const urlId = useSelector(state => state.status.currentToken);
-  const currentTx = useSelector(state => state.status.currentTx);
+
+  const currentTxName = useSelector(state => state.status.currentTx.name);
   const currentTxStatus = useSelector(state => state.status.currentTx.status);
 
   const utils = drizzle.web3.utils;
@@ -51,17 +53,28 @@ const BuyForm = props => {
   const [inputValues, setInputValues] = useState(initialInputs);
 
   const [waitApproval, setWaitApproval] = useState(false);
+  const [showTxModal, setShowTxModal] = useState(false);
 
   const [tokenPriceKey, setTokenPriceKey] = useState(
     contracts.Harber.methods.price.cacheCall(urlId)
   );
 
   useEffect(() => {
-    if (waitApproval && currentTxStatus === "SUCCESSFUL") {
+    if (
+      waitApproval &&
+      currentTxName === "approve" &&
+      currentTxStatus === "SUCCESSFUL"
+    ) {
       setWaitApproval(false);
       doSubmit();
     }
   }, [waitApproval, currentTxStatus]);
+
+  useEffect(() => {
+    if (currentTxName === "newRental" && currentTxStatus === "SUCCESSFUL") {
+      setShowTxModal(false);
+    }
+  }, [currentTxStatus]);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -118,9 +131,10 @@ const BuyForm = props => {
       return;
     }
 
-    approveTransaction(drizzle, inputValues["_deposit"]).then(
-      setWaitApproval(true)
-    );
+    approveTransaction(drizzle, inputValues["_deposit"]).then(() => {
+      setWaitApproval(true);
+      setShowTxModal(true);
+    });
   };
 
   const doSubmit = () => {
@@ -205,69 +219,72 @@ const BuyForm = props => {
   const valueLabel = props.valueLabel;
 
   return (
-    <form
-      className="pure-form pure-form-stacked w-50 mx-auto"
-      onSubmit={handleSubmit}
-    >
-      {inputs.map((input, index) => {
-        var inputType = translateType(input.type);
-        var inputLabel = props.labels ? props.labels[index] : input.name;
-        // check if input type is struct and if so loop out struct fields as well
-        // console.log(input);
-        //this is another hack as Im not sure what is going on
-        if (input.name === "_newPrice") {
-          return (
-            <Input
-              label={"DAI"}
-              key={input.name}
-              type={inputType}
-              name={input.name}
-              value={inputValues[input.name]}
-              placeholder={inputLabel}
-              onChange={handleInputChange}
-              error={inputValues["_newPriceError"]}
-            />
-          );
-        }
-
-        // if (input.name == "_deposit")
-        // {
-        //   return (
-
-        //     // <Input
-        //       // key={input.name}
-        //       // type={inputType}
-        //       // name={input.name}
-        //       // value={this.state[input.name]}
-        //       // placeholder={inputLabel}
-        //       // onChange={this.handleInputChange}
-        //       // startAdornment={<InputAdornment position="start">ETH</InputAdornment>}
-        //     // />
-        //   );
-        // }
-      })}
-      {valueLabel && (
-        <Input
-          label={"DAI"}
-          key={valueLabel}
-          type="number"
-          name="_deposit"
-          value={inputValues[valueLabel]}
-          placeholder={valueLabel}
-          onChange={handleInputChange}
-          error={inputValues["_depositError"]}
-        />
-      )}
-      <Button
-        variant="dark"
-        key="submit"
-        type="button"
-        className="text-uppercase"
-        onClick={handleSubmit}
+    <>
+      <form
+        className="pure-form pure-form-stacked w-50 mx-auto"
+        onSubmit={handleSubmit}
       >
-        Rent Token
-      </Button>
-    </form>
+        {inputs.map((input, index) => {
+          var inputType = translateType(input.type);
+          var inputLabel = props.labels ? props.labels[index] : input.name;
+          // check if input type is struct and if so loop out struct fields as well
+          // console.log(input);
+          //this is another hack as Im not sure what is going on
+          if (input.name === "_newPrice") {
+            return (
+              <Input
+                label={"DAI"}
+                key={input.name}
+                type={inputType}
+                name={input.name}
+                value={inputValues[input.name]}
+                placeholder={inputLabel}
+                onChange={handleInputChange}
+                error={inputValues["_newPriceError"]}
+              />
+            );
+          }
+
+          // if (input.name == "_deposit")
+          // {
+          //   return (
+
+          //     // <Input
+          //       // key={input.name}
+          //       // type={inputType}
+          //       // name={input.name}
+          //       // value={this.state[input.name]}
+          //       // placeholder={inputLabel}
+          //       // onChange={this.handleInputChange}
+          //       // startAdornment={<InputAdornment position="start">ETH</InputAdornment>}
+          //     // />
+          //   );
+          // }
+        })}
+        {valueLabel && (
+          <Input
+            label={"DAI"}
+            key={valueLabel}
+            type="number"
+            name="_deposit"
+            value={inputValues[valueLabel]}
+            placeholder={valueLabel}
+            onChange={handleInputChange}
+            error={inputValues["_depositError"]}
+          />
+        )}
+        <Button
+          variant="dark"
+          key="submit"
+          type="button"
+          className="text-uppercase"
+          onClick={handleSubmit}
+        >
+          Rent Token
+        </Button>
+      </form>
+      <TxModal show={showTxModal} />
+    </>
   );
 };
 
