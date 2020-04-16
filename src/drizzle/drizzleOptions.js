@@ -15,6 +15,9 @@ const options = {
     }
   },
   contracts: [Harber, ERC721Full, Cash],
+  events: {
+    Harber: ["LogNewRental"]
+  },
   syncAlways: true,
   polls: {
     accounts: 1500

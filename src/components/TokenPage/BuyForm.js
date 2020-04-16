@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { useSelector } from "react-redux";
 
@@ -21,7 +21,10 @@ const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 const BuyForm = props => {
   const { drizzle } = useDrizzle();
   const state = useDrizzleState(state => state);
+
   const urlId = useSelector(state => state.status.currentToken);
+  const currentTx = useSelector(state => state.status.currentTx);
+  const currentTxStatus = useSelector(state => state.status.currentTx.status);
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
@@ -47,9 +50,18 @@ const BuyForm = props => {
   const [inputs, setInputs] = useState(inputsArray);
   const [inputValues, setInputValues] = useState(initialInputs);
 
+  const [waitApproval, setWaitApproval] = useState(false);
+
   const [tokenPriceKey, setTokenPriceKey] = useState(
     contracts.Harber.methods.price.cacheCall(urlId)
   );
+
+  useEffect(() => {
+    if (waitApproval && currentTxStatus === "SUCCESSFUL") {
+      setWaitApproval(false);
+      doSubmit();
+    }
+  }, [waitApproval, currentTxStatus]);
 
   const handleSubmit = async event => {
     event.preventDefault();
@@ -106,8 +118,9 @@ const BuyForm = props => {
       return;
     }
 
-    await doSubmit();
-    approveTransaction(inputValues["_deposit"]);
+    approveTransaction(drizzle, inputValues["_deposit"]).then(
+      setWaitApproval(true)
+    );
   };
 
   const doSubmit = () => {
@@ -152,7 +165,7 @@ const BuyForm = props => {
       // console.log("args.value is" , args.value );
       // console.log("value thingy is", this.utils.toWei(this.state.value, 'ether'));
     }
-    if (args) {
+    if (Object.keys(args).length !== 0 && args.constructor !== Object) {
       // console.log("args is: ", args);
 
       ////so heres the thing. convertedinputs is the arguments to send to the function. Args = the amount payable. It does this bit if there is value being sent
@@ -164,9 +177,9 @@ const BuyForm = props => {
     }
 
     ////it does this if is no value being sent, so in reality this is not used.
-    return this.contracts[this.props.contract].methods[
-      this.props.method
-    ].cacheSend(...convertedInputs);
+    return contracts[props.contract].methods[props.method].cacheSend(
+      ...convertedInputs
+    );
   };
 
   const handleInputChange = event => {
@@ -204,18 +217,16 @@ const BuyForm = props => {
         //this is another hack as Im not sure what is going on
         if (input.name === "_newPrice") {
           return (
-            <>
-              <Input
-                label={"DAI"}
-                key={input.name}
-                type={inputType}
-                name={input.name}
-                value={inputValues[input.name]}
-                placeholder={inputLabel}
-                onChange={handleInputChange}
-                error={inputValues["_newPriceError"]}
-              />
-            </>
+            <Input
+              label={"DAI"}
+              key={input.name}
+              type={inputType}
+              name={input.name}
+              value={inputValues[input.name]}
+              placeholder={inputLabel}
+              onChange={handleInputChange}
+              error={inputValues["_newPriceError"]}
+            />
           );
         }
 
@@ -236,18 +247,16 @@ const BuyForm = props => {
         // }
       })}
       {valueLabel && (
-        <>
-          <Input
-            label={"DAI"}
-            key={valueLabel}
-            type="number"
-            name="_deposit"
-            value={inputValues[valueLabel]}
-            placeholder={valueLabel}
-            onChange={handleInputChange}
-            error={inputValues["_depositError"]}
-          />
-        </>
+        <Input
+          label={"DAI"}
+          key={valueLabel}
+          type="number"
+          name="_deposit"
+          value={inputValues[valueLabel]}
+          placeholder={valueLabel}
+          onChange={handleInputChange}
+          error={inputValues["_depositError"]}
+        />
       )}
       <Button
         variant="dark"

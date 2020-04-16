@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 import BuyTokenSection from "./BuyTokenSection";
 // import ActionSection from "./ActionSection";
 // import DetailsSection from "./DetailsSection";
 // import LeaderboardSection from "./LeaderboardSection";
+
+import { setCurrentToken } from "../../store/actions/status";
 
 import { Container, Row, Col } from "react-bootstrap";
 import Token from "../tokens/Token";
@@ -15,44 +18,55 @@ import { ReactComponent as Div3 } from "../../assets/dividers/horz-col-2.svg";
 import { ReactComponent as Div4 } from "../../assets/dividers/horz-row.svg";
 
 const OneToken = props => {
-  const urlId = props.match.params.id;
+  const urlId = useSelector(state => state.status.currentToken);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!urlId) {
+      const url_string = window.location.href;
+      const id = url_string.substring(url_string.lastIndexOf("/") + 1);
+      dispatch(setCurrentToken(id));
+    }
+  }, []);
 
   return (
     <section className="section-wave section-dark">
-      <Container className="container-full">
-        <Row noGutters className="position-relative">
-          <Col lg={6}>
-            <div className="grid-tile top-left position-relative">
-              <Token
-                urlId={teams[urlId].id}
-                name={teams[urlId].name}
-                image={teams[urlId].logo}
-              />
-              <Div2 className="div div-2 d-none d-lg-block" />
+      {urlId ? (
+        <Container className="container-full">
+          <Row noGutters className="position-relative">
+            <Col lg={6}>
+              <div className="grid-tile top-left position-relative">
+                <Token
+                  urlId={teams[urlId].id}
+                  name={teams[urlId].name}
+                  image={teams[urlId].logo}
+                />
+                <Div2 className="div div-2 d-none d-lg-block" />
+              </div>
+              <div className="grid-tile">{/* <DetailsSection /> */}</div>
+            </Col>
+            <Col lg={6} className="d-flex flex-column">
+              <div className="grid-tile top-right position-relative">
+                <BuyTokenSection />
+                <Div3 className="div div-3 d-none d-lg-block" />
+              </div>
+              <div
+                className="grid-tile d-flex flex-column align-items-center justify-content-center"
+                style={{ flex: 1 }}
+              >
+                {/* <ActionSection /> */}
+              </div>
+            </Col>
+            <Div1 className="div div-1 d-none d-lg-block" />
+            <Div4 className="div div-4 d-none d-lg-block" />
+          </Row>
+          <Row noGutters>
+            <div className="grid-tile bottom-right bottom-left">
+              {/* <LeaderboardSection /> */}
             </div>
-            <div className="grid-tile">{/* <DetailsSection /> */}</div>
-          </Col>
-          <Col lg={6} className="d-flex flex-column">
-            <div className="grid-tile top-right position-relative">
-              <BuyTokenSection />
-              <Div3 className="div div-3 d-none d-lg-block" />
-            </div>
-            <div
-              className="grid-tile d-flex flex-column align-items-center justify-content-center"
-              style={{ flex: 1 }}
-            >
-              {/* <ActionSection /> */}
-            </div>
-          </Col>
-          <Div1 className="div div-1 d-none d-lg-block" />
-          <Div4 className="div div-4 d-none d-lg-block" />
-        </Row>
-        <Row noGutters>
-          <div className="grid-tile bottom-right bottom-left">
-            {/* <LeaderboardSection /> */}
-          </div>
-        </Row>
-      </Container>
+          </Row>
+        </Container>
+      ) : null}
       <Wave className="wave wave-dark" />
     </section>
   );
