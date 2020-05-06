@@ -17,7 +17,7 @@ class Metadata extends Component {
     this.data = {
       name: "Harber.io",
       description: "Harber.io",
-      image: ""
+      image: "",
     };
   }
   render() {
@@ -25,28 +25,25 @@ class Metadata extends Component {
   }
 }
 
-class AppRoutes extends Component {
+const AppRoutes extends Component {
   render() {
     return (
-      <Router history={history} store={store}>
-        <ScrollToTop />
+      <Provider store={store}>
         <Container fluid className="px-0">
           <Row className="mx-0">
             <Col className="px-0">
               <Navigation />
-              <Route path="/token/:id" exact component={OneToken} />
-              <Route path="/" exact component={AllTokens} />
-              <Route path="/metadata" exact component={Metadata} />
-              {/* 
-                For static pages where you don't need to interact with a contract just use <Route>
-                
-                For dynamic pages that need access to a contract use <DrizzleRoute>
-              */}
-              <Footer />
+              <Router history={history} store={store}>
+                <ScrollToTop />
+                <Route path="/token/:id" exact component={OneToken} />
+                <Route path="/" exact component={AllTokens} />
+                <Route path="/metadata" exact component={Metadata} />
+                <Footer />
+              </Router>{" "}
             </Col>
           </Row>
         </Container>
-      </Router>
+      </Provider>
     );
   }
 }

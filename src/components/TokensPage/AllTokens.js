@@ -16,9 +16,9 @@ import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-const AllTokens = props => {
+const AllTokens = (props) => {
   const { drizzle } = useDrizzle();
-  const state = useDrizzleState(state => state);
+  const state = useDrizzleState((state) => state);
 
   const dispatch = useDispatch();
 
@@ -29,7 +29,7 @@ const AllTokens = props => {
   const [contractsReady, setContractsReady] = useState(false);
   const [sumOfAllPrices, setSumOfAllPrices] = useState(0);
 
-  const getArtworkPrice = tokenPriceKey => {
+  const getArtworkPrice = (tokenPriceKey) => {
     return new utils.BN(contractsState["Harber"]["price"][tokenPriceKey].value);
   };
 
@@ -48,7 +48,7 @@ const AllTokens = props => {
         setContractsReady(true);
         let sum = 0;
 
-        teams.map(async token => {
+        teams.map(async (token) => {
           const tokenPriceKey = contracts.Harber.methods.price.cacheCall(
             token.id
           );
@@ -66,19 +66,17 @@ const AllTokens = props => {
     }
   });
 
-  const displayToken = async tokenId => {
+  const displayToken = async (tokenId) => {
     await dispatch(setCurrentToken(tokenId));
-    await props.history.push(`/token/${tokenId}`);
+    await history.push(`/token/${tokenId}`);
   };
 
   return (
     <>
-      <LearnMore />
-      <LeagueInfo />
       <section className="section-wave section-dark">
         <Container>
           <Row>
-            {teams.map(team => {
+            {teams.map((team) => {
               return (
                 <Col
                   key={team.id}

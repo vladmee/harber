@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
 
 import BuyTokenSection from "./BuyTokenSection";
 // import ActionSection from "./ActionSection";
@@ -7,6 +8,7 @@ import BuyTokenSection from "./BuyTokenSection";
 // import LeaderboardSection from "./LeaderboardSection";
 
 import { setCurrentToken } from "../../store/actions/status";
+import { history } from "../../store";
 
 import { Container, Row, Col } from "react-bootstrap";
 import Token from "../tokens/Token";
@@ -17,8 +19,14 @@ import { ReactComponent as Div2 } from "../../assets/dividers/horz-col-1.svg";
 import { ReactComponent as Div3 } from "../../assets/dividers/horz-col-2.svg";
 import { ReactComponent as Div4 } from "../../assets/dividers/horz-row.svg";
 
-const OneToken = props => {
-  const urlId = useSelector(state => state.status.currentToken);
+const { useDrizzle, useDrizzleState } = drizzleReactHooks;
+
+const OneToken = (props) => {
+  const { initialized } = useDrizzleState((drizzleState) => ({
+    initialized: drizzleState.drizzleStatus.initialized,
+  }));
+
+  const urlId = useSelector((state) => state.status.currentToken);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,6 +36,10 @@ const OneToken = props => {
       dispatch(setCurrentToken(id));
     }
   }, []);
+
+  if (!initialized) {
+    history.push(`/`);
+  }
 
   return (
     <section className="section-wave section-dark">

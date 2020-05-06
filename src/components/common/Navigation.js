@@ -1,10 +1,45 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, withRouter } from "react-router-dom";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
 
-import { Container, Navbar, Nav } from "react-bootstrap";
+import shortenAddress from "../utils/shortenAddress";
+
+import { Container, Navbar, Nav, Button } from "react-bootstrap";
 import logo_horz_light from "../../assets/harber/logo_horz_light.svg";
 
+const { useDrizzle, useDrizzleState } = drizzleReactHooks;
+
+const preflightCheck = () => {
+  if (window.ethereum) {
+    window.ethereum.enable();
+  }
+};
+
 const Navigation = () => {
+  const { drizzle } = useDrizzle();
+  const drizzleState = useDrizzleState((drizzleState) => drizzleState);
+  const { accounts, accountBalances } = drizzleState;
+  const address = accounts["0"];
+
+  // const drizzleState = drizzleReactHooks.useDrizzleState(drizzleState => ({
+  //   account: drizzleState.accounts[0]
+  // }))
+
+  const [account, setAccount] = useState(null);
+  const [balance, setBalance] = useState(null);
+
+  useEffect(() => {
+    if (drizzleState) {
+      setAccount(address);
+    }
+  }, [address]);
+
+  useEffect(() => {
+    if (Object.keys(accountBalances).length > 0 && address !== null) {
+      setBalance(accountBalances[address].toString());
+    }
+  }, [accountBalances, address]);
+
   return (
     <Container>
       <Navbar collapseOnSelect expand="md">
@@ -29,6 +64,17 @@ const Navigation = () => {
               My teams
             </NavLink>
           </Nav>
+
+          {account && balance ? (
+            <>
+              {" "}
+              |
+              <Navbar.Text>
+                Connected as: {shortenAddress(account)} <br />
+                Balance: {drizzle.web3.utils.fromWei(balance, "ether")} ETH
+              </Navbar.Text>{" "}
+            </>
+          ) : null}
         </Navbar.Collapse>
       </Navbar>
     </Container>

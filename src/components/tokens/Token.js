@@ -10,9 +10,9 @@ import { roundTwoDecimals } from "../common/Helpers";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
-const PriceSection = props => {
+const PriceSection = (props) => {
   const { drizzle } = useDrizzle();
-  const state = useDrizzleState(state => state);
+  const state = useDrizzleState((state) => state);
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
@@ -44,7 +44,7 @@ const PriceSection = props => {
     setUSD(USD);
   };
 
-  const updateTimeHeld = async timeHeldKey => {
+  const updateTimeHeld = async (timeHeldKey) => {
     const date = new Date();
     let currentTimeHeld =
       parseInt(getTimeHeld(timeHeldKey)) +
@@ -91,7 +91,7 @@ const PriceSection = props => {
     return contractsState["Harber"]["timeAcquired"][timeAcquiredKey].value;
   };
 
-  const getTimeHeld = timeHeldKey => {
+  const getTimeHeld = (timeHeldKey) => {
     return contractsState["Harber"]["timeHeld"][timeHeldKey].value;
   };
 

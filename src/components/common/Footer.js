@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGithub,
   faTwitter,
-  faInstagram
+  faInstagram,
 } from "@fortawesome/free-brands-svg-icons";
 
 const Footer = () => {
@@ -47,7 +47,7 @@ const Footer = () => {
           >
             <img
               src={logo_vert_light}
-              height="180"
+              height="100"
               alt="Harber logo"
               className="mb-3 mb-md-0"
             />
@@ -89,7 +89,7 @@ const Footer = () => {
           </Col>
         </Row>
         <Row>
-          <p className="text-center small w-100">© Harber, 2020</p>
+          <p className="text-center small w-100">© Reality Cards, 2020</p>
         </Row>
       </Container>
     </footer>
