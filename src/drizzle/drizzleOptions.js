@@ -11,17 +11,17 @@ const options = {
     block: false,
     fallback: {
       type: "ws",
-      url: fallbackUrl
-    }
+      url: fallbackUrl,
+    },
   },
   contracts: [Harber, ERC721Full, Cash],
   events: {
-    Harber: ["LogNewRental"]
+    Harber: ["LogNewRental"],
   },
   syncAlways: true,
   polls: {
-    accounts: 1500
-  }
+    accounts: 1500,
+  },
 };
 
 export default options;
