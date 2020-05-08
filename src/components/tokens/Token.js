@@ -1,136 +1,104 @@
 import React, { useState, useEffect, useRef } from "react";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
+import { newContextComponents } from "@drizzle/react-components";
 
 import moment from "moment";
-import ContractData from "../ContractData";
-import { getUSDValue } from "../../Actions";
+import toEth from "../utils/toEth";
+import roundTwoDecimals from "../utils/roundTwoDecimals";
 
 import { Image } from "react-bootstrap";
-import { roundTwoDecimals } from "../common/Helpers";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
+const { ContractData } = newContextComponents;
 
-const PriceSection = (props) => {
-  const { drizzle } = useDrizzle();
-  const state = useDrizzleState((state) => state);
+const Token = ({ token, sumOfAllPrices }) => {
+  const tokenId = token.id;
+  const { drizzle, useCacheCall } = useDrizzle();
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
-  const contractsState = state.contracts;
+  const { drizzleState, currentUser, Harber, ERC721Full } = useDrizzleState(
+    (drizzleState) => ({
+      drizzleState: drizzleState,
+      currentUser: drizzleState.accounts[0],
+      Harber: drizzleState.contracts.Harber,
+      ERC721Full: drizzleState.contracts.ERC721Full,
+    })
+  );
 
-  const [USD, setUSD] = useState(-1);
-  const [tokenPriceKey, setTokenPriceKey] = useState(
-    drizzle.contracts.Harber.methods.price.cacheCall(props.urlId)
-  );
-  const [patron, setPatron] = useState(null);
-  const [patronKey, setPatronKey] = useState(
-    drizzle.contracts.ERC721Full.methods.ownerOf.cacheCall(props.urlId)
-  );
-  const [timeAcquiredKey, setTimeAcquiredKey] = useState(
-    drizzle.contracts.Harber.methods.timeAcquired.cacheCall(props.urlId)
-  );
+  const [owner, setOwner] = useState(null);
   const [timeHeldKey, setTimeHeldKey] = useState(null);
-  const [currentTimeHeld, setCurrentTimeHeld] = useState(0);
   const [currentTimeHeldHumanized, setCurrentTimeHeldHumanized] = useState("");
   const [impliedOdds, setImpliedOdds] = useState(null);
 
-  const getArtworkPrice = () => {
-    return new utils.BN(contractsState["Harber"]["price"][tokenPriceKey].value);
-  };
-
-  const updateUSDPrice = async () => {
-    const price = utils.fromWei(getArtworkPrice(), "ether");
-    const USD = await getUSDValue(price);
-    setUSD(USD);
-  };
-
-  const updateTimeHeld = async (timeHeldKey) => {
-    const date = new Date();
-    let currentTimeHeld =
-      parseInt(getTimeHeld(timeHeldKey)) +
-      (parseInt(date.getTime() / 1000) - parseInt(getTimeAcquired()));
-
-    var currentTimeHeldHumanized = moment
-      .duration(currentTimeHeld, "seconds")
-      .humanize();
-
-    if (
-      contractsState["ERC721Full"]["ownerOf"][patronKey].value ===
-      contracts.Harber.address
-    ) {
-      currentTimeHeldHumanized = "unowned";
-    }
-
-    setCurrentTimeHeld(currentTimeHeld);
-    setCurrentTimeHeldHumanized(currentTimeHeldHumanized);
-  };
-
-  const updatePatron = async () => {
-    let patron = getPatron();
-    if (patron === contracts.Harber.address) {
-      patron = "unowned";
-    }
-    // update timeHeldKey IF owner updated
-    let timeHeldKey;
-    if (patron !== "unowned") {
-      timeHeldKey = contracts.Harber.methods.timeHeld.cacheCall(
-        props.urlId,
-        patron
-      );
-    }
-    setCurrentTimeHeld(0);
-    setTimeHeldKey(timeHeldKey);
-    setPatron(patron);
-  };
-
-  const getPatron = () => {
-    return contractsState["ERC721Full"]["ownerOf"][patronKey].value;
-  };
-
-  const getTimeAcquired = () => {
-    return contractsState["Harber"]["timeAcquired"][timeAcquiredKey].value;
-  };
-
-  const getTimeHeld = (timeHeldKey) => {
-    return contractsState["Harber"]["timeHeld"][timeHeldKey].value;
-  };
-
-  const getImpliedOdds = async () => {
-    const price = await utils.fromWei(getArtworkPrice(tokenPriceKey), "ether");
-
-    return (price / props.sumOfAllPrices) * 100;
-  };
-
-  const isFirstRender = useRef(true);
+  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
+  const ownerAddress = useCacheCall("ERC721Full", "ownerOf", [tokenId]);
+  const timeLastCollected = useCacheCall("Harber", "timeLastCollected", [
+    tokenId,
+  ]);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
+    if (ownerAddress) {
+      updateOwner();
+    }
+  }, [ownerAddress]);
+
+  useEffect(() => {
+    if (timeHeldKey) {
+      updateTimeHeld();
+    }
+  }, [timeHeldKey, Harber["timeHeld"]]);
+
+  useEffect(() => {
+    if (impliedOdds === null && sumOfAllPrices !== 0 && tokenPrice) {
+      updateImpliedOdds();
+    }
+  }, [impliedOdds, sumOfAllPrices, tokenPrice]);
+
+  const updateOwner = async () => {
+    if (ownerAddress === contracts.Harber.address) {
+      setOwner("unowned");
+      return;
+    } else if (ownerAddress === currentUser) {
+      setOwner("you");
+    } else {
+      setOwner(ownerAddress);
+    }
+
+    const timeHeldKey = await contracts.Harber.methods.timeHeld.cacheCall(
+      tokenId,
+      ownerAddress
+    );
+    setTimeHeldKey(timeHeldKey);
+  };
+
+  const updateTimeHeld = async () => {
+    const date = new Date();
+    let timeHeld = null;
+
+    if (timeHeldKey in Harber["timeHeld"]) {
+      timeHeld = Harber["timeHeld"][timeHeldKey].value;
+    } else {
       return;
     }
 
-    if (patronKey in contractsState["ERC721Full"]["ownerOf"]) {
-      updatePatron();
-    }
+    const currentTimeHeld =
+      parseInt(timeHeld) +
+      (parseInt(date.getTime() / 1000) - parseInt(timeLastCollected));
 
-    /* todo: fetch new exchange rate? */
-    if (tokenPriceKey in contractsState["Harber"]["price"]) {
-      updateUSDPrice();
-    }
+    const currentTimeHeldHumanized = moment
+      .duration(currentTimeHeld, "seconds")
+      .humanize();
 
-    if (timeHeldKey in contractsState["Harber"]["timeHeld"]) {
-      updateTimeHeld(timeHeldKey);
-    }
+    setCurrentTimeHeldHumanized(currentTimeHeldHumanized);
+  };
 
-    if (
-      impliedOdds === null &&
-      props.sumOfAllPrices !== 0 &&
-      tokenPriceKey in contractsState["Harber"]["price"]
-    ) {
-      const impliedOdds = getImpliedOdds();
-      setImpliedOdds(impliedOdds);
-    }
-  });
+  const updateImpliedOdds = async () => {
+    const priceEth = await utils.fromWei(tokenPrice, "ether");
+    const odds = (priceEth / sumOfAllPrices) * 100;
+
+    setImpliedOdds(odds);
+  };
 
   return (
     <>
@@ -140,8 +108,10 @@ const PriceSection = (props) => {
         <ContractData
           contract="Harber"
           method="price"
-          methodArgs={[props.urlId]}
-          toEth
+          methodArgs={[tokenId]}
+          drizzle={drizzle}
+          drizzleState={drizzleState}
+          render={(amount) => toEth(amount, drizzle)}
         />
       </h3>
       <p>
@@ -150,14 +120,14 @@ const PriceSection = (props) => {
         ) : null}
       </p>
       <Image
-        src={window.location.origin + "/logos/" + props.image}
-        alt={props.name}
+        src={window.location.origin + "/logos/" + token.image}
+        alt={token.name}
         height={130}
         className="logo-image mb-3"
       />
-      <h5>{props.name}</h5>
+      <h5>{token.name}</h5>
       <p className="mb-1">Current owner:</p>
-      <p className="small">{patron}</p>
+      <p className="small">{owner}</p>
       <p className="mb-0">
         {currentTimeHeldHumanized ? (
           <>Owned for {currentTimeHeldHumanized}</>
@@ -169,4 +139,4 @@ const PriceSection = (props) => {
   );
 };
 
-export default PriceSection;
+export default Token;

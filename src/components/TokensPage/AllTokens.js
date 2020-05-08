@@ -1,63 +1,49 @@
 import React, { useState, useEffect, useRef } from "react";
-import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { useDispatch } from "react-redux";
-import { withRouter } from "react-router";
+import { drizzleReactHooks } from "@drizzle/react-plugin";
 
 import Token from "../tokens/Token";
-import LearnMore from "./LearnMore";
-import LeagueInfo from "./LeagueInfo";
 
-import { teams } from "../tokens/teams";
+import { tokens } from "../tokens/premier-league";
 import { history } from "../../store";
 import { setCurrentToken } from "../../store/actions/status";
 
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Image } from "react-bootstrap";
 import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
 const AllTokens = (props) => {
   const { drizzle } = useDrizzle();
-  const state = useDrizzleState((state) => state);
+  const { initialized, Harber } = useDrizzleState((drizzleState) => ({
+    initialized: drizzleState.drizzleStatus.initialized,
+    Harber: drizzleState.contracts.Harber,
+  }));
 
   const dispatch = useDispatch();
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
-  const contractsState = state.contracts;
 
   const [contractsReady, setContractsReady] = useState(false);
   const [sumOfAllPrices, setSumOfAllPrices] = useState(0);
 
-  const getArtworkPrice = (tokenPriceKey) => {
-    return new utils.BN(contractsState["Harber"]["price"][tokenPriceKey].value);
-  };
-
-  const isFirstRender = useRef(true);
+  const [metamaskAlert, setMetamaskAlert] = useState(false);
 
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
     if (!contractsReady) {
-      if (
-        Object.keys(contractsState["Harber"]["price"]).length === teams.length
-      ) {
+      if (Object.keys(Harber["price"]).length === tokens.length) {
         setContractsReady(true);
         let sum = 0;
 
-        teams.map(async (token) => {
+        tokens.map(async (token) => {
           const tokenPriceKey = contracts.Harber.methods.price.cacheCall(
             token.id
           );
 
-          if (tokenPriceKey in contractsState["Harber"]["price"]) {
-            const price = await utils.fromWei(
-              getArtworkPrice(tokenPriceKey),
-              "ether"
-            );
+          if (tokenPriceKey in Harber["price"]) {
+            const tokenPrice = getTokenPrice(tokenPriceKey);
+            const price = await utils.fromWei(tokenPrice, "ether");
             sum += Number(price);
             setSumOfAllPrices(sum);
           }
@@ -66,9 +52,17 @@ const AllTokens = (props) => {
     }
   });
 
+  const getTokenPrice = (tokenPriceKey) => {
+    return new utils.BN(Harber["price"][tokenPriceKey].value);
+  };
+
   const displayToken = async (tokenId) => {
-    await dispatch(setCurrentToken(tokenId));
-    await history.push(`/token/${tokenId}`);
+    if (initialized) {
+      dispatch(setCurrentToken(tokenId));
+      history.push(`/token/${tokenId}`);
+    } else {
+      setMetamaskAlert(true);
+    }
   };
 
   return (
@@ -76,23 +70,30 @@ const AllTokens = (props) => {
       <section className="section-wave section-dark">
         <Container>
           <Row>
-            {teams.map((team) => {
+            {tokens.map((token) => {
               return (
                 <Col
-                  key={team.id}
+                  key={token.id}
                   md={4}
                   className="d-flex align-items-stretch"
                 >
                   <Card
-                    onClick={() => displayToken(team.id)}
+                    onClick={() => displayToken(token.id)}
                     className="d-block w-100"
                   >
-                    <Token
-                      urlId={team.id}
-                      name={team.name}
-                      image={team.logo}
-                      sumOfAllPrices={sumOfAllPrices}
-                    />
+                    {initialized ? (
+                      <Token token={token} sumOfAllPrices={sumOfAllPrices} />
+                    ) : (
+                      <>
+                        <Image
+                          src={window.location.origin + "/logos/" + token.logo}
+                          alt={token.name}
+                          height={130}
+                          className="logo-image mb-3"
+                        />
+                        <h5>{token.name}</h5>
+                      </>
+                    )}
                   </Card>
                 </Col>
               );

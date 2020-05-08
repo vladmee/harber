@@ -14,13 +14,8 @@ const Home = (props) => {
   return (
     <>
       <LearnMore />
-
-      {initialized && (
-        <>
-          <LeagueInfo />
-          <AllTokens />
-        </>
-      )}
+      <LeagueInfo initialized={initialized} />
+      <AllTokens initialized={initialized} />
     </>
   );
 };
