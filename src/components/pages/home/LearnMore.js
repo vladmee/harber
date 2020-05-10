@@ -1,8 +1,8 @@
 import React from "react";
 
 import { Container, Row, Col, Button } from "react-bootstrap";
-import logo_icon_dark from "../../assets/harber/logo_icon_dark.svg";
-import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
+import logo_icon_dark from "../../../assets/logo/logo_icon_dark.svg";
+import { ReactComponent as Wave } from "../../../assets/dividers/wave.svg";
 
 const LearnMore = () => {
   return (

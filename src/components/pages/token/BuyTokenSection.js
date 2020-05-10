@@ -4,10 +4,10 @@ import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { newContextComponents } from "@drizzle/react-components";
 
 import DaiBalanceSection from "./DaiBalanceSection";
-import TestDaiFaucetSection from "../TestFaucet/TestDaiFaucetSection";
+import TestDaiFaucetSection from "../../common/TestDaiFaucetSection";
 
-import Input from "../common/Input";
-import TxModal from "../common/TxModal";
+import Input from "../../common/Input";
+import TxModal from "../../common/TxModal";
 import { Button } from "react-bootstrap";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
@@ -15,12 +15,10 @@ const { ContractForm } = newContextComponents;
 
 const BuyTokenSection = () => {
   const { drizzle, useCacheCall, useCacheSend } = useDrizzle();
-  const { drizzleState, currentUser, Harber, ERC721Full } = useDrizzleState(
-    (drizzleState) => ({
-      drizzleState: drizzleState,
-      currentUser: drizzleState.accounts[0],
-    })
-  );
+  const { drizzleState, currentUser } = useDrizzleState((drizzleState) => ({
+    drizzleState: drizzleState,
+    currentUser: drizzleState.accounts[0],
+  }));
 
   const utils = drizzle.web3.utils;
 

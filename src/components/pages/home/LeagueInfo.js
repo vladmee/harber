@@ -3,9 +3,9 @@ import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { newContextComponents } from "@drizzle/react-components";
 
 import { Container, Row } from "react-bootstrap";
-import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
+import { ReactComponent as Wave } from "../../../assets/dividers/wave.svg";
 
-import toEth from "../utils/toEth";
+import toEth from "../../utils/toEth";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 const { ContractData } = newContextComponents;

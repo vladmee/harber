@@ -2,7 +2,6 @@ import Harber from "../contracts/Harber.json";
 import Cash from "../contracts/Cash.json";
 import ERC721Full from "../contracts/ERC721Full.json";
 
-// todo: read env var for fallback
 const fallbackUrl =
   "wss://mainnet.infura.io/ws/v3/e811479f4c414e219e7673b6671c2aba";
 
@@ -15,9 +14,7 @@ const options = {
     },
   },
   contracts: [Harber, ERC721Full, Cash],
-  events: {
-    Harber: ["LogNewRental"],
-  },
+  events: {},
   syncAlways: true,
   polls: {
     accounts: 1500,

@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
 import { Col, Alert, Image, Button } from "react-bootstrap";
 
+import icon_metamask from "../assets/icons/icon_metamask.svg";
+
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
 const DrizzleWarning = () => {
@@ -22,7 +24,7 @@ const DrizzleWarning = () => {
       style={{ width: "80%" }}
     >
       <Col xs={1}>
-        <Image src="/img/metamask.png" height={40} />
+        <Image src={icon_metamask} height={40} />
       </Col>
       <Col>
         <p className="font-weight-bold mb-0 mx-3">

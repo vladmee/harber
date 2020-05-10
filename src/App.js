@@ -12,8 +12,8 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import Navigation from "./components/common/Navigation";
 import Footer from "./components/common/Footer";
 
-import Home from "./components/pages/Home";
-import OneToken from "./components/TokenPage/OneToken";
+import Home from "./components/pages/home/Home";
+import OneToken from "./components/pages/token/OneToken";
 
 const { useDrizzleState } = drizzleReactHooks;
 

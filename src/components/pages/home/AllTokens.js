@@ -2,14 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
 
-import Token from "../tokens/Token";
+import Token from "../../tokens/Token";
 
-import { tokens } from "../tokens/premier-league";
-import { history } from "../../store";
-import { setCurrentToken } from "../../store/actions/status";
+import { tokens } from "../../tokens/premier-league";
+import { history } from "../../../store";
+import { setCurrentToken } from "../../../store/actions/status";
 
 import { Container, Row, Col, Card, Image } from "react-bootstrap";
-import { ReactComponent as Wave } from "../../assets/dividers/wave.svg";
+import { ReactComponent as Wave } from "../../../assets/dividers/wave.svg";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 

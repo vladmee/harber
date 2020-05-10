@@ -1,10 +1,10 @@
 import React from "react";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
-import LearnMore from "../TokensPage/LearnMore";
-import LeagueInfo from "../TokensPage/LeagueInfo";
-import AllTokens from "../TokensPage/AllTokens";
+import LearnMore from "./LearnMore";
+import LeagueInfo from "./LeagueInfo";
+import AllTokens from "./AllTokens";
 
-const { useDrizzle, useDrizzleState } = drizzleReactHooks;
+const { useDrizzleState } = drizzleReactHooks;
 
 const Home = (props) => {
   const { initialized } = useDrizzleState((drizzleState) => ({
