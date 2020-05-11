@@ -13,7 +13,6 @@ const Home = (props) => {
 
   return (
     <>
-      <LearnMore />
       <LeagueInfo initialized={initialized} />
       <AllTokens initialized={initialized} />
     </>

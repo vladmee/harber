@@ -1,9 +1,9 @@
 import React from "react";
 
-const Input = ({ label, name, error, ...rest }) => {
+const Input = ({ className, label, name, error, ...rest }) => {
   return (
     <>
-      <div className="mb-3">
+      <div className={className}>
         <div
           className={`input-wrapper d-flex flex-row align-items-center mb-1`}
         >

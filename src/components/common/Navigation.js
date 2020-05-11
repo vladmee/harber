@@ -50,7 +50,7 @@ const Navigation = () => {
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="ml-auto">
             <NavLink
-              to="/"
+              to="/markets"
               exact
               className="nav-link text-uppercase mr-0 mr-md-3rem"
             >

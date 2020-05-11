@@ -10,13 +10,18 @@ a.card:hover {
   border-radius: 10px;
   background-color: white;
   text-align: center;
+  border: 1px solid $primary;
+  cursor: pointer;
 
-  border: 5px solid transparent;
-  &:hover {
-    border-color: $primary;
-  }
+  // &:hover {
+  //   border-color: $primary;
+  // }
 
   .logo-image {
     max-width: 100%;
   }
+}
+
+.tinder {
+  z-index: 2 !important;
 }

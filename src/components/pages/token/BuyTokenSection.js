@@ -21,13 +21,19 @@ const BuyTokenSection = () => {
   }));
 
   const utils = drizzle.web3.utils;
+  const contracts = drizzle.contracts;
 
   const tokenId = useSelector((state) => state.status.currentToken);
   const currentTxName = useSelector((state) => state.status.currentTx.name);
   const currentTxStatus = useSelector((state) => state.status.currentTx.status);
 
   const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
-  const { send, TXObjects } = useCacheSend("Cash", "approve");
+  // const currentAllowance = useCacheCall("Cash", "allowance", [
+  //   currentUser,
+  //   contracts.Cash.address,
+  // ]);
+
+  const approve = useCacheSend("Cash", "approve");
 
   const noErrors = {
     _newPrice: null,
@@ -56,14 +62,14 @@ const BuyTokenSection = () => {
   //   }
   // }, [currentTxName, currentTxStatus]);
 
-  useEffect(() => {
-    if (!submitted && TXObjects && TXObjects[0]) {
-      if (TXObjects[0].status === "success") {
-        submitFunction.handleSubmit(submitFunction.e);
-        setSubmitted(true);
-      }
-    }
-  }, [TXObjects]);
+  // useEffect(() => {
+  //   if (!submitted && TXObjects && TXObjects[0]) {
+  //     if (TXObjects[0].status === "success") {
+  //       submitFunction.handleSubmit(submitFunction.e);
+  //       setSubmitted(true);
+  //     }
+  //   }
+  // }, [TXObjects]);
 
   const handleRent = async (e, state, handleSubmit) => {
     e.preventDefault();
@@ -118,7 +124,13 @@ const BuyTokenSection = () => {
       return;
     }
 
-    send(currentUser, depositWei);
+    // console.log(currentAllowance, depositWei);
+
+    // if (currentAllowance >= depositWei) {
+    //   console.log("submit");
+    // } else {
+    //   console.log("approve");
+    // }
   };
 
   return (
@@ -149,6 +161,7 @@ const BuyTokenSection = () => {
                 placeholder="New Rental Price"
                 onChange={handleInputChange}
                 error={inputErrors["_newPrice"]}
+                className="mb-3"
               />
               <Input
                 label={"DAI"}
@@ -157,6 +170,7 @@ const BuyTokenSection = () => {
                 placeholder="Your Initial Deposit"
                 onChange={handleInputChange}
                 error={inputErrors["_deposit"]}
+                className="mb-3"
               />
               <Button variant="dark" type="submit" className="text-uppercase">
                 Rent Token

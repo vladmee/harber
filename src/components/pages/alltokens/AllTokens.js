@@ -86,7 +86,7 @@ const AllTokens = (props) => {
                     ) : (
                       <>
                         <Image
-                          src={window.location.origin + "/logos/" + token.logo}
+                          src={window.location.origin + "/logos/" + token.image}
                           alt={token.name}
                           height={130}
                           className="logo-image mb-3"

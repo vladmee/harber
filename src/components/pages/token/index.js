@@ -50,12 +50,12 @@ const OneToken = (props) => {
           {urlId ? (
             <Container className="container-full">
               <Row noGutters className="position-relative">
-                <Col lg={6}>
+                <Col lg={6} className="d-flex flex-column">
                   <div className="grid-tile top-left position-relative">
                     <Token token={tokens[urlId]} />
                     <Div2 className="div div-2 d-none d-lg-block" />
                   </div>
-                  <div className="grid-tile">
+                  <div className="grid-tile d-flex flex-column align-items-center justify-content-center">
                     <DetailsSection />
                   </div>
                 </Col>

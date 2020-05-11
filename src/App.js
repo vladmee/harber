@@ -12,8 +12,9 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import Navigation from "./components/common/Navigation";
 import Footer from "./components/common/Footer";
 
-import Home from "./components/pages/home/Home";
-import OneToken from "./components/pages/token/OneToken";
+import Home from "./components/pages/home";
+import AllTokens from "./components/pages/alltokens";
+import OneToken from "./components/pages/token";
 
 const { useDrizzleState } = drizzleReactHooks;
 
@@ -41,6 +42,7 @@ const App = () => {
             <Navigation />
             <DrizzleWarning />
             <Route path="/token/:id" exact component={OneToken} />
+            <Route path="/markets" exact component={AllTokens} />
             <Route path="/" exact component={Home} />
             <Footer />
           </Col>

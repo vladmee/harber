@@ -14,8 +14,16 @@ const ActionSection = () => {
   const { drizzleState } = useDrizzleState((drizzleState) => ({
     drizzleState: drizzleState,
   }));
+  const utils = drizzle.web3.utils;
 
   const tokenId = useSelector((state) => state.status.currentToken);
+
+  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
+  const depositAbleToWithdraw = useCacheCall(
+    "Harber",
+    "userDepositAbleToWithdraw",
+    [tokenId]
+  );
 
   const noErrors = {
     _newPrice: null,
@@ -23,6 +31,94 @@ const ActionSection = () => {
     _daiToWithdraw: null,
   };
   const [inputErrors, setInputErrors] = useState(noErrors);
+
+  const [newRentFunction, setNewRentFunction] = useState(null);
+  const [submitNewRent, setSubmitNewRent] = useState(false);
+
+  const [depositFunction, setDepositFunction] = useState(null);
+  const [submitDeposit, setSubmitDeposit] = useState(false);
+
+  const handleNewRent = async (e, state, handleSubmit) => {
+    e.preventDefault();
+    e.persist();
+    setNewRentFunction({
+      e: e,
+      handleSubmit: handleSubmit,
+    });
+    setInputErrors({ ...noErrors });
+
+    if (!state["_newPrice"]) {
+      setInputErrors({
+        ...inputErrors,
+        _newPrice: "Please insert a rental price",
+      });
+      return;
+    }
+
+    const newPriceWei = await utils.toWei(state["_newPrice"], "ether");
+
+    const currentPrice = Number(tokenPrice);
+    const newPrice = Number(newPriceWei);
+
+    if (newPrice < currentPrice + currentPrice / 10) {
+      setInputErrors({
+        ...inputErrors,
+        _newPrice:
+          "The new price should be at least 10% higher than the current price",
+      });
+      return;
+    }
+  };
+
+  const handleDeposit = async (e, state, handleSubmit) => {
+    e.preventDefault();
+    e.persist();
+    setDepositFunction({
+      e: e,
+      handleSubmit: handleSubmit,
+    });
+    setInputErrors({ ...noErrors });
+
+    if (!state["_dai"]) {
+      setInputErrors({
+        ...inputErrors,
+        _dai: "Please insert the deposit amount",
+      });
+      return;
+    }
+  };
+
+  const handleDepositWithdraw = async (e, state, handleSubmit) => {
+    e.preventDefault();
+    e.persist();
+    setInputErrors({ ...noErrors });
+
+    if (!state["_daiToWithdraw"]) {
+      setInputErrors({
+        ...inputErrors,
+        _daiToWithdraw: "Please insert the amount to withdraw",
+      });
+      return;
+    }
+
+    const depositWithdrawWei = await utils.toWei(
+      state["_daiToWithdraw"],
+      "ether"
+    );
+
+    const depositAble = Number(depositAbleToWithdraw);
+    const depositWithdraw = Number(depositWithdrawWei);
+
+    if (depositWithdraw > depositAble) {
+      setInputErrors({
+        ...inputErrors,
+        _daiToWithdraw: "Insufficient funds",
+      });
+      return;
+    }
+
+    handleSubmit(e);
+  };
 
   return (
     <div>
@@ -37,8 +133,8 @@ const ActionSection = () => {
             state._tokenId = tokenId;
             return (
               <form
-                className="mx-auto"
-                //onSubmit={(e) => handleRent(e, state, handleSubmit)}
+                className="d-flex flex-row justify-content-between align-items-center mx-auto"
+                onSubmit={(e) => handleNewRent(e, state, handleSubmit)}
               >
                 <Input
                   label="DAI"
@@ -66,8 +162,8 @@ const ActionSection = () => {
             state._tokenId = tokenId;
             return (
               <form
-                className="mx-auto"
-                //onSubmit={(e) => handleRent(e, state, handleSubmit)}
+                className="d-flex flex-row justify-content-between align-items-center mx-auto"
+                onSubmit={(e) => handleDeposit(e, state, handleSubmit)}
               >
                 <Input
                   label="DAI"
@@ -95,8 +191,8 @@ const ActionSection = () => {
             state._tokenId = tokenId;
             return (
               <form
-                className="mx-auto"
-                //onSubmit={(e) => handleRent(e, state, handleSubmit)}
+                className="d-flex flex-row justify-content-between align-items-center mx-auto"
+                onSubmit={(e) => handleDepositWithdraw(e, state, handleSubmit)}
               >
                 <Input
                   label="DAI"
@@ -124,8 +220,8 @@ const ActionSection = () => {
             state._tokenId = tokenId;
             return (
               <form
-                className="mx-auto"
-                //onSubmit={(e) => handleRent(e, state, handleSubmit)}
+                className="d-flex flex-row justify-content-between align-items-center mx-auto"
+                onSubmit={handleSubmit}
               >
                 <Button variant="dark" type="submit" className="text-uppercase">
                   Withdraw Whole Deposit And transfer token to previous owner

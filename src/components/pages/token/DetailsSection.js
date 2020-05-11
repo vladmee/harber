@@ -29,8 +29,10 @@ const DetailsSection = () => {
     tokenId,
   ]);
 
-  const [combinedCollectedToken, setCombinedCollectedToken] = useState(-1);
-  const [rentalExpiryTime, setRentalExpiryTime] = useState("N/A");
+  const [combinedCollectedToken, setCombinedCollectedToken] = useState(
+    "Fetching..."
+  );
+  const [rentalExpiryTime, setRentalExpiryTime] = useState("Fetching...");
 
   useEffect(() => {
     if (tokenPrice === "0") {
@@ -41,7 +43,11 @@ const DetailsSection = () => {
   }, [tokenPrice]);
 
   useEffect(() => {
-    if (combinedCollectedToken === -1 && collectedPerToken && rentOwed) {
+    if (
+      combinedCollectedToken === "Fetching..." &&
+      collectedPerToken &&
+      rentOwed
+    ) {
       updateCombineCollectedToken();
     }
   }, [collectedPerToken, rentOwed, combinedCollectedToken]);
