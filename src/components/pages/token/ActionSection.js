@@ -11,19 +11,28 @@ const { ContractForm } = newContextComponents;
 
 const ActionSection = () => {
   const { drizzle, useCacheCall, useCacheSend } = useDrizzle();
-  const { drizzleState } = useDrizzleState((drizzleState) => ({
+  const { drizzleState, currentUser } = useDrizzleState((drizzleState) => ({
     drizzleState: drizzleState,
+    currentUser: drizzleState.accounts[0],
   }));
   const utils = drizzle.web3.utils;
+  const contracts = drizzle.contracts;
 
   const tokenId = useSelector((state) => state.status.currentToken);
 
-  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
+  const tokenPrice = useCacheCall("RealityCards", "price", [tokenId]);
   const depositAbleToWithdraw = useCacheCall(
-    "Harber",
-    "userDepositAbleToWithdraw",
+    "RealityCards",
+    "userRemainingDeposit",
     [tokenId]
   );
+  const currentAllowance = useCacheCall(
+    "Cash",
+    "allowance",
+    currentUser,
+    contracts.Cash.address
+  );
+  const approve = useCacheSend("Cash", "approve");
 
   const noErrors = {
     _newPrice: null,
@@ -32,19 +41,20 @@ const ActionSection = () => {
   };
   const [inputErrors, setInputErrors] = useState(noErrors);
 
-  const [newRentFunction, setNewRentFunction] = useState(null);
-  const [submitNewRent, setSubmitNewRent] = useState(false);
-
   const [depositFunction, setDepositFunction] = useState(null);
-  const [submitDeposit, setSubmitDeposit] = useState(false);
+  const [waitApproval, setWaitApproval] = useState(false);
+
+  useEffect(() => {
+    if (waitApproval && approve.status === "success") {
+      setWaitApproval(false);
+      depositFunction.handleSubmit(depositFunction.e);
+    }
+  }, [waitApproval, approve]);
 
   const handleNewRent = async (e, state, handleSubmit) => {
     e.preventDefault();
     e.persist();
-    setNewRentFunction({
-      e: e,
-      handleSubmit: handleSubmit,
-    });
+
     setInputErrors({ ...noErrors });
 
     if (!state["_newPrice"]) {
@@ -68,6 +78,20 @@ const ActionSection = () => {
       });
       return;
     }
+
+    const userDepositWei = await utils.toWei(depositAbleToWithdraw, "ether");
+    const userDepositNumber = Number(userDepositWei);
+
+    if (userDepositNumber < newPrice / 24) {
+      setInputErrors({
+        ...inputErrors,
+        _newPrice:
+          "Your current deposit amount is not enough for one hour's rent",
+      });
+      return;
+    }
+
+    handleSubmit(e);
   };
 
   const handleDeposit = async (e, state, handleSubmit) => {
@@ -85,6 +109,17 @@ const ActionSection = () => {
         _dai: "Please insert the deposit amount",
       });
       return;
+    }
+
+    const depositWei = await utils.toWei(state["_dai"], "ether");
+    const deposit = Number(depositWei);
+
+    if (Number(currentAllowance) >= deposit) {
+      handleSubmit(e);
+    } else {
+      const amountToApprove = "1000000000000000000000"; //$1000 in DAI
+      approve.send(contracts.Cash.address, amountToApprove);
+      setWaitApproval(true);
     }
   };
 
@@ -125,7 +160,7 @@ const ActionSection = () => {
       <h5 className="mb-4">Actions</h5>
       <div className="mb-3">
         <ContractForm
-          contract="Harber"
+          contract="RealityCards"
           method="changePrice"
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -154,7 +189,7 @@ const ActionSection = () => {
       </div>
       <div className="mb-3">
         <ContractForm
-          contract="Harber"
+          contract="RealityCards"
           method="depositDai"
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -183,7 +218,7 @@ const ActionSection = () => {
       </div>
       <div className="mb-3">
         <ContractForm
-          contract="Harber"
+          contract="RealityCards"
           method="withdrawDeposit"
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -212,7 +247,7 @@ const ActionSection = () => {
       </div>
       <div className="mb-3">
         <ContractForm
-          contract="Harber"
+          contract="RealityCards"
           method="exit"
           drizzle={drizzle}
           drizzleState={drizzleState}

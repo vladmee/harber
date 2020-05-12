@@ -17,23 +17,26 @@ const Token = ({ token, sumOfAllPrices }) => {
 
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
-  const { drizzleState, currentUser, Harber, ERC721Full } = useDrizzleState(
-    (drizzleState) => ({
-      drizzleState: drizzleState,
-      currentUser: drizzleState.accounts[0],
-      Harber: drizzleState.contracts.Harber,
-      ERC721Full: drizzleState.contracts.ERC721Full,
-    })
-  );
+  const {
+    drizzleState,
+    currentUser,
+    RealityCards,
+    ERC721Full,
+  } = useDrizzleState((drizzleState) => ({
+    drizzleState: drizzleState,
+    currentUser: drizzleState.accounts[0],
+    RealityCards: drizzleState.contracts.RealityCards,
+    ERC721Full: drizzleState.contracts.ERC721Full,
+  }));
 
   const [owner, setOwner] = useState(null);
   const [timeHeldKey, setTimeHeldKey] = useState(null);
   const [currentTimeHeldHumanized, setCurrentTimeHeldHumanized] = useState("");
   const [impliedOdds, setImpliedOdds] = useState(null);
 
-  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
+  const tokenPrice = useCacheCall("RealityCards", "price", [tokenId]);
   const ownerAddress = useCacheCall("ERC721Full", "ownerOf", [tokenId]);
-  const timeLastCollected = useCacheCall("Harber", "timeLastCollected", [
+  const timeLastCollected = useCacheCall("RealityCards", "timeLastCollected", [
     tokenId,
   ]);
 
@@ -47,7 +50,7 @@ const Token = ({ token, sumOfAllPrices }) => {
     if (timeHeldKey) {
       updateTimeHeld();
     }
-  }, [timeHeldKey, Harber["timeHeld"]]);
+  }, [timeHeldKey, RealityCards["timeHeld"]]);
 
   useEffect(() => {
     if (impliedOdds === null && sumOfAllPrices !== 0 && tokenPrice) {
@@ -56,7 +59,7 @@ const Token = ({ token, sumOfAllPrices }) => {
   }, [impliedOdds, sumOfAllPrices, tokenPrice]);
 
   const updateOwner = async () => {
-    if (ownerAddress === contracts.Harber.address) {
+    if (ownerAddress === contracts.RealityCards.address) {
       setOwner("unowned");
       return;
     } else if (ownerAddress === currentUser) {
@@ -65,7 +68,7 @@ const Token = ({ token, sumOfAllPrices }) => {
       setOwner(ownerAddress);
     }
 
-    const timeHeldKey = await contracts.Harber.methods.timeHeld.cacheCall(
+    const timeHeldKey = await contracts.RealityCards.methods.timeHeld.cacheCall(
       tokenId,
       ownerAddress
     );
@@ -76,8 +79,8 @@ const Token = ({ token, sumOfAllPrices }) => {
     const date = new Date();
     let timeHeld = null;
 
-    if (timeHeldKey in Harber["timeHeld"]) {
-      timeHeld = Harber["timeHeld"][timeHeldKey].value;
+    if (timeHeldKey in RealityCards["timeHeld"]) {
+      timeHeld = RealityCards["timeHeld"][timeHeldKey].value;
     } else {
       return;
     }
@@ -106,7 +109,7 @@ const Token = ({ token, sumOfAllPrices }) => {
       <h3 className="text-primary">
         $
         <ContractData
-          contract="Harber"
+          contract="RealityCards"
           method="price"
           methodArgs={[tokenId]}
           drizzle={drizzle}

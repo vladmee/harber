@@ -25,7 +25,7 @@ const LeagueInfo = ({ initialized }) => {
               <span className="text-primary">
                 $
                 <ContractData
-                  contract="Harber"
+                  contract="RealityCards"
                   method="totalCollected"
                   methodArgs={[]}
                   drizzle={drizzle}

@@ -1,39 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, withRouter } from "react-router-dom";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
+import { newContextComponents } from "@drizzle/react-components";
 
 import shortenAddress from "../utils/shortenAddress";
-import roundTwoDecimals from "../utils/roundTwoDecimals";
+import toEth from "../utils/toEth";
 
 import { Container, Navbar, Nav, Button } from "react-bootstrap";
 import logo_horz_light from "../../assets/logo/logo_horz_light.svg";
 
 const { useDrizzle, useDrizzleState } = drizzleReactHooks;
+const { ContractData } = newContextComponents;
 
 const Navigation = () => {
-  const { drizzle } = useDrizzle();
-  const drizzleState = useDrizzleState((drizzleState) => drizzleState);
-  const { accounts, accountBalances } = drizzleState;
-  const address = accounts["0"];
-
-  // const drizzleState = drizzleReactHooks.useDrizzleState(drizzleState => ({
-  //   account: drizzleState.accounts[0]
-  // }))
-
-  const [account, setAccount] = useState(null);
-  const [balance, setBalance] = useState(null);
-
-  useEffect(() => {
-    if (drizzleState) {
-      setAccount(address);
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (Object.keys(accountBalances).length > 0 && address !== null) {
-      setBalance(accountBalances[address].toString());
-    }
-  }, [accountBalances, address]);
+  const { drizzle, useCacheCall } = useDrizzle();
+  const { drizzleState, initialized, currentUser } = useDrizzleState(
+    (drizzleState) => ({
+      drizzleState: drizzleState,
+      initialized: drizzleState.drizzleStatus.initialized,
+      currentUser: drizzleState.accounts[0],
+    })
+  );
 
   return (
     <Container>
@@ -43,7 +30,7 @@ const Navigation = () => {
             src={logo_horz_light}
             height="50"
             className="d-inline-block align-top"
-            alt="Harber logo"
+            alt="RealityCards logo"
           />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -68,17 +55,22 @@ const Navigation = () => {
             </NavLink>
           </Nav>
 
-          {account && balance ? (
+          {initialized && currentUser ? (
             <>
               {" "}
               <span className="mx-3">|</span>
               <Navbar.Text className="small">
-                Connected as: {shortenAddress(account)} <br />
+                Connected as: {shortenAddress(currentUser)} <br />
                 Balance:{" "}
-                {roundTwoDecimals(
-                  drizzle.web3.utils.fromWei(balance, "ether")
-                )}{" "}
-                ETH
+                <ContractData
+                  contract="Cash"
+                  method="balanceOf"
+                  methodArgs={[currentUser]}
+                  drizzle={drizzle}
+                  drizzleState={drizzleState}
+                  render={(balance) => toEth(balance, drizzle)}
+                />{" "}
+                DAI
               </Navbar.Text>{" "}
             </>
           ) : null}

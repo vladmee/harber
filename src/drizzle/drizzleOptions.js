@@ -1,4 +1,4 @@
-import Harber from "../contracts/Harber.json";
+import RealityCards from "../contracts/RealityCards.json";
 import Cash from "../contracts/Cash.json";
 import ERC721Full from "../contracts/ERC721Full.json";
 
@@ -13,7 +13,7 @@ const options = {
       url: fallbackUrl,
     },
   },
-  contracts: [Harber, ERC721Full, Cash],
+  contracts: [RealityCards, ERC721Full, Cash],
   events: {},
   syncAlways: true,
   polls: {
