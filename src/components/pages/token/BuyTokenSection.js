@@ -49,6 +49,7 @@ const BuyTokenSection = () => {
   }, [waitApproval, approve]);
 
   const handleRent = async (e, state, handleSubmit) => {
+    console.log(e);
     e.preventDefault();
     e.persist();
     setSubmitFunction({

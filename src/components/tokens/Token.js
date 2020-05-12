@@ -40,6 +40,8 @@ const Token = ({ token, sumOfAllPrices }) => {
     tokenId,
   ]);
 
+  console.log(tokenPrice, ownerAddress, timeLastCollected);
+
   useEffect(() => {
     if (ownerAddress) {
       updateOwner();
