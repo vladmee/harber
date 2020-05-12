@@ -29,7 +29,7 @@ const BuyTokenSection = () => {
     "Cash",
     "allowance",
     currentUser,
-    contracts.Cash.address
+    contracts.RealityCards.address
   );
   const approve = useCacheSend("Cash", "approve");
 
@@ -104,7 +104,7 @@ const BuyTokenSection = () => {
       handleSubmit(e);
     } else {
       const amountToApprove = "1000000000000000000000"; //$1000 in DAI
-      approve.send(contracts.Cash.address, amountToApprove);
+      approve.send(contracts.RealityCards.address, amountToApprove);
       setWaitApproval(true);
     }
   };
