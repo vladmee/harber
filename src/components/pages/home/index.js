@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { drizzleReactHooks } from "@drizzle/react-plugin";
 
 import { Container, Row, Col, Button } from "react-bootstrap";
-//import CardStack from "./CardStack";
+import CardStack from "./CardStack";
 
 const { useDrizzleState } = drizzleReactHooks;
 
@@ -29,7 +29,7 @@ const Home = (props) => {
             md={6}
             className="d-flex flex-column jusitfy-content-center align-items-center"
           >
-            {/* <CardStack initialized={initialized} /> */}
+            <CardStack initialized={initialized} />
           </Col>
         </Row>
       </Container>
