@@ -100,6 +100,8 @@ const BuyTokenSection = () => {
       return;
     }
 
+    console.log(drizzle);
+
     if (Number(currentAllowance) >= deposit) {
       handleSubmit(e);
     } else {
