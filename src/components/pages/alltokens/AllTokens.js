@@ -15,9 +15,9 @@ const { useDrizzle, useDrizzleState } = drizzleReactHooks;
 
 const AllTokens = (props) => {
   const { drizzle } = useDrizzle();
-  const { initialized, RealityCards } = useDrizzleState((drizzleState) => ({
+  const { initialized, Harber } = useDrizzleState((drizzleState) => ({
     initialized: drizzleState.drizzleStatus.initialized,
-    RealityCards: drizzleState.contracts.RealityCards,
+    Harber: drizzleState.contracts.Harber,
   }));
 
   const dispatch = useDispatch();
@@ -32,16 +32,16 @@ const AllTokens = (props) => {
 
   useEffect(() => {
     if (!contractsReady) {
-      if (Object.keys(RealityCards["price"]).length === tokens.length) {
+      if (Object.keys(Harber["price"]).length === tokens.length) {
         setContractsReady(true);
         let sum = 0;
 
         tokens.map(async (token) => {
-          const tokenPriceKey = contracts.RealityCards.methods.price.cacheCall(
+          const tokenPriceKey = contracts.Harber.methods.price.cacheCall(
             token.id
           );
 
-          if (tokenPriceKey in RealityCards["price"]) {
+          if (tokenPriceKey in Harber["price"]) {
             const tokenPrice = getTokenPrice(tokenPriceKey);
             const price = await utils.fromWei(tokenPrice, "ether");
             sum += Number(price);
@@ -53,7 +53,7 @@ const AllTokens = (props) => {
   });
 
   const getTokenPrice = (tokenPriceKey) => {
-    return new utils.BN(RealityCards["price"][tokenPriceKey].value);
+    return new utils.BN(Harber["price"][tokenPriceKey].value);
   };
 
   const displayToken = async (tokenId) => {

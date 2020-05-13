@@ -20,10 +20,10 @@ const ActionSection = () => {
 
   const tokenId = useSelector((state) => state.status.currentToken);
 
-  const tokenPrice = useCacheCall("RealityCards", "price", [tokenId]);
+  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
   const depositAbleToWithdraw = useCacheCall(
-    "RealityCards",
-    "userRemainingDeposit",
+    "Harber",
+    "userDepositAbleToWithdraw",
     [tokenId]
   );
   const currentAllowance = useCacheCall(
@@ -160,7 +160,7 @@ const ActionSection = () => {
       <h5 className="mb-4">Actions</h5>
       <div className="mb-3">
         <ContractForm
-          contract="RealityCards"
+          contract="Harber"
           method="changePrice"
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -189,7 +189,7 @@ const ActionSection = () => {
       </div>
       <div className="mb-3">
         <ContractForm
-          contract="RealityCards"
+          contract="Harber"
           method="depositDai"
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -218,7 +218,7 @@ const ActionSection = () => {
       </div>
       <div className="mb-3">
         <ContractForm
-          contract="RealityCards"
+          contract="Harber"
           method="withdrawDeposit"
           drizzle={drizzle}
           drizzleState={drizzleState}
@@ -247,7 +247,7 @@ const ActionSection = () => {
       </div>
       <div className="mb-3">
         <ContractForm
-          contract="RealityCards"
+          contract="Harber"
           method="exit"
           drizzle={drizzle}
           drizzleState={drizzleState}

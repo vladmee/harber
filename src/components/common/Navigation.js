@@ -30,7 +30,7 @@ const Navigation = () => {
             src={logo_horz_light}
             height="50"
             className="d-inline-block align-top"
-            alt="RealityCards logo"
+            alt="Harber logo"
           />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />

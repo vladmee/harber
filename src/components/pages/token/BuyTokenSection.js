@@ -24,12 +24,12 @@ const BuyTokenSection = () => {
 
   const tokenId = useSelector((state) => state.status.currentToken);
 
-  const tokenPrice = useCacheCall("RealityCards", "price", [tokenId]);
+  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
   const currentAllowance = useCacheCall(
     "Cash",
     "allowance",
     currentUser,
-    contracts.RealityCards.address
+    contracts.Harber.address
   );
   const approve = useCacheSend("Cash", "approve");
 
@@ -100,13 +100,11 @@ const BuyTokenSection = () => {
       return;
     }
 
-    console.log(drizzle);
-
     if (Number(currentAllowance) >= deposit) {
       handleSubmit(e);
     } else {
       const amountToApprove = "1000000000000000000000"; //$1000 in DAI
-      approve.send(contracts.RealityCards.address, amountToApprove);
+      approve.send(contracts.Harber.address, amountToApprove);
       setWaitApproval(true);
     }
   };
@@ -121,7 +119,7 @@ const BuyTokenSection = () => {
       </div>
 
       <ContractForm
-        contract="RealityCards"
+        contract="Harber"
         method="newRental"
         drizzle={drizzle}
         drizzleState={drizzleState}

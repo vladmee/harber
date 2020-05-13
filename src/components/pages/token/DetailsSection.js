@@ -14,18 +14,18 @@ const { ContractData } = newContextComponents;
 
 const DetailsSection = () => {
   const { drizzle, useCacheCall } = useDrizzle();
-  const { drizzleState, RealityCards } = useDrizzleState((drizzleState) => ({
+  const { drizzleState, Harber } = useDrizzleState((drizzleState) => ({
     drizzleState: drizzleState,
-    RealityCards: drizzleState.contracts.RealityCards,
+    Harber: drizzleState.contracts.Harber,
   }));
   const utils = drizzle.web3.utils;
   const contracts = drizzle.contracts;
 
   const tokenId = useSelector((state) => state.status.currentToken);
 
-  const tokenPrice = useCacheCall("RealityCards", "price", [tokenId]);
-  const rentOwed = useCacheCall("RealityCards", "rentOwed", [tokenId]);
-  const collectedPerToken = useCacheCall("RealityCards", "collectedPerToken", [
+  const tokenPrice = useCacheCall("Harber", "price", [tokenId]);
+  const rentOwed = useCacheCall("Harber", "rentOwed", [tokenId]);
+  const collectedPerToken = useCacheCall("Harber", "collectedPerToken", [
     tokenId,
   ]);
 
@@ -53,7 +53,7 @@ const DetailsSection = () => {
   }, [collectedPerToken, rentOwed, combinedCollectedToken]);
 
   const updateRentalExpiryTime = async () => {
-    const rentalExpiryTime = await contracts.RealityCards.methods
+    const rentalExpiryTime = await contracts.Harber.methods
       .rentalExpiryTime(tokenId)
       .call();
 
@@ -78,8 +78,8 @@ const DetailsSection = () => {
       <p>
         <span className="text-primary">
           <ContractData
-            contract="RealityCards"
-            method="currentOwnerRemainingDeposit"
+            contract="Harber"
+            method="liveDepositAbleToWithdraw"
             methodArgs={[tokenId]}
             drizzle={drizzle}
             drizzleState={drizzleState}
@@ -93,8 +93,8 @@ const DetailsSection = () => {
       <p>
         <span className="text-primary">
           <ContractData
-            contract="RealityCards"
-            method="userRemainingDeposit"
+            contract="Harber"
+            method="userDepositAbleToWithdraw"
             methodArgs={[tokenId]}
             drizzle={drizzle}
             drizzleState={drizzleState}

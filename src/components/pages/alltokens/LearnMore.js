@@ -16,7 +16,7 @@ const LearnMore = () => {
             <img
               src={logo_icon_dark}
               height="100"
-              alt="RealityCards logo"
+              alt="Harber logo"
               className="mb-3 mb-md-0"
             />
           </Col>
@@ -25,7 +25,7 @@ const LearnMore = () => {
             className="d-flex align-items-center justify-content-center"
           >
             <p className="text-light mb-3 mb-md-0 text-center text-md-left">
-              RealityCards is a new type of prediction market,
+              Harber is a new type of prediction market,
               <br />
               where instead of betting on a team, you own the team.
             </p>

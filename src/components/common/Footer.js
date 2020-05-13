@@ -48,7 +48,7 @@ const Footer = () => {
             <img
               src={logo_vert_light}
               height="100"
-              alt="RealityCards logo"
+              alt="Harber logo"
               className="mb-3 mb-md-0"
             />
           </Col>

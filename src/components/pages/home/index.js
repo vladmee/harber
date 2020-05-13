@@ -18,7 +18,7 @@ const Home = (props) => {
         <Row className="h-100 align-items-center justify-content-around">
           <Col md={6}>
             <h1 className="text-white mb-3">
-              RealityCards is a new type of prediction market, where instead of
+              Harber is a new type of prediction market, where instead of
               betting on a team, you own the team.
             </h1>
             <Link to="/markets" className="btn btn-primary">
